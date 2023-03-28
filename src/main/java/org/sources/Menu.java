@@ -1,5 +1,8 @@
 package org.sources;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -34,7 +37,7 @@ public class Menu {
         System.out.println(PrettifyConsole.ANSI_BLUE + "\n\uD83D\uDCE6 • PRODUCT" + PrettifyConsole.ANSI_RESET);
         System.out.println("1  | Create new product");
         System.out.println("2  | Edit existing product");
-        System.out.println("3  | [EXTRA] Display product information");
+        System.out.println("3  | [EXTRA] Search for product");
         System.out.println("4  | [EXTRA] List all products");
         System.out.println(PrettifyConsole.ANSI_BLUE + "\n\uD83D\uDED2 • CART" + PrettifyConsole.ANSI_RESET);
         System.out.println("5  | Create new cart");
@@ -61,7 +64,7 @@ public class Menu {
         switch (choice) {
             case 0 -> endProgram();
             case 1 -> createProduct();
-            case 2 -> editProduct();
+            case 2 -> editProductStart();
             case 3 -> getProduct();
             case 4 -> getAllProducts();
             case 5 -> createCart();
@@ -70,7 +73,8 @@ public class Menu {
             case 8 -> getCartAmount();
             case 9 -> getAllCartsSorted();
             case 10 -> getCart();
-            default -> PrettifyConsole.printError("Entered choice doesn't match any available options. Please try again.");
+            default ->
+                    PrettifyConsole.printError("Entered choice doesn't match any available options. Please try again.");
         }
     }
 
@@ -84,11 +88,11 @@ public class Menu {
 
     private static void createPhysicalProduct() {
         PrettifyConsole.title("Create physical product");
-        String name = Input.getString("Name", Product::validateName);
+        String name = Input.getString("Name", "not blank, unique", Product::validateName);
         String description = Input.getString("Description");
-        int availableQuantity = Input.getInt("Available quantity", Product::validateAvailableQuantity);
-        double price = Input.getDouble("Price", Product::validatePrice);
-        double weight = Input.getDouble("Weight", PhysicalProduct::validateWeight);
+        int availableQuantity = Input.getInt("Available quantity", "larger than 0", Product::validateAvailableQuantity);
+        double price = Input.getDouble("Price", "larger than 0", Product::validatePrice);
+        double weight = Input.getDouble("Weight", "larger than 0", PhysicalProduct::validateWeight);
         boolean giftable = Input.getBoolean("Giftable");
         String message = null;
         if (giftable) message = Input.getString("Message");
@@ -100,30 +104,81 @@ public class Menu {
 
     private static void createDigitalProduct() {
         PrettifyConsole.title("Create digital product");
-        String name = Input.getString("Name", Product::validateName);
+        String name = Input.getString("Name", "not blank, unique", Product::validateName);
         String description = Input.getString("Description");
-        int availableQuantity = Input.getInt("Available quantity", Product::validateAvailableQuantity);
-        double price = Input.getDouble("Price", Product::validatePrice);
+        int availableQuantity = Input.getInt("Available quantity", "larger than 0", Product::validateAvailableQuantity);
+        double price = Input.getDouble("Price", "larger than 0", Product::validatePrice);
         boolean giftable = Input.getBoolean("Giftable");
         String message = null;
         if (giftable) message = Input.getString("Message");
 
         DigitalProduct digitalProduct = new DigitalProduct(name, description, availableQuantity, price, giftable, message);
-        PrettifyConsole.printSuccess("Physical production creation successful.");
+        PrettifyConsole.printSuccess("Digital production creation successful.");
         PrettifyConsole.printSuccess(String.valueOf(digitalProduct));
     }
 
-    private static void editProduct() {
+    private static void editProductStart() {
         PrettifyConsole.title("Edit existing product");
+        String query = Input.getString("Product name to edit", "not empty", Input::validateStringNotBlank);
+        if (Product.getAllProducts().containsKey(query)) {
+            System.out.println("\nProduct found.");
+            editProduct(Product.getAllProducts().get(query));
+        } else {
+            System.out.println("\nProduct not found.");
+        }
+    }
+
+    private static void editProduct(Product product) {
+        // Build the available fields to edit
+        ArrayList<String> productFields = new ArrayList<>(Arrays.asList("Name", "Description", "Available quantity", "Price"));
+        switch (product.getClass().getSimpleName()) {
+            case "PhysicalProduct" -> {
+                productFields.add("Weight");
+                productFields.add("Giftable");
+            }
+            case "DigitalProduct" -> productFields.addAll(List.of("Giftable"));
+        }
+        if (((Giftable) product).getGiftable()) productFields.add("Message");
+
+
+        boolean editing = true;
+        int choice;
+        do {
+            System.out.println(product);
+            choice = Input.getChoiceWithQuit("Select field to edit", productFields.toArray(new String[0]));
+
+            switch (choice) {
+                case 1 -> product.setName(Input.getString("Name", "not blank, unique", Product::validateName));
+                case 2 -> product.setDescription(Input.getString("Description"));
+                case 3 -> product.setAvailableQuantity(Input.getInt("Available quantity", "larger than 0", Product::validateAvailableQuantity));
+                case 4 -> product.setPrice(Input.getDouble("Price", "larger than 0", Product::validatePrice));
+                default -> editing = false;
+            }
+        } while (editing);
     }
 
 
     private static void getProduct() {
-        PrettifyConsole.title("Display product information");
+        PrettifyConsole.title("Search for product");
+        String query = Input.getString("Product name to search for", "not empty", Input::validateStringNotBlank);
+        if (Product.getAllProducts().containsKey(query)) {
+            System.out.println("\nProduct found.");
+            Product result = Product.getAllProducts().get(query);
+            System.out.println(result);
+        } else {
+            System.out.println("\nProduct not found.");
+        }
     }
 
     private static void getAllProducts() {
         PrettifyConsole.title("List all products");
+        if (Product.getAllProducts().isEmpty()) {
+            System.out.println("No product available");
+        } else {
+            Product.getAllProducts().values().forEach(product ->
+                    System.out.println("\n" + product));
+        }
+
     }
 
     private static void createCart() {
@@ -162,10 +217,21 @@ class Input {
 
     protected static String getString(String prompt, Function<String, String> validator) {
         boolean valid = false;
+        String prettifiedGuide = PrettifyConsole.guide(" (" + "Text" + ")");
+        return getStringCore(prompt, validator, valid, prettifiedGuide);
+    }
+
+    protected static String getString(String prompt, String guide, Function<String, String> validator) {
+        boolean valid = false;
+        String prettifiedGuide = PrettifyConsole.guide(" (" + "Text, " + guide + ")");
+        return getStringCore(prompt, validator, valid, prettifiedGuide);
+    }
+
+    private static String getStringCore(String prompt, Function<String, String> validator, boolean valid, String prettifiedGuide) {
         String input;
 
         do {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt + prettifiedGuide + ": ");
             input = Menu.scanner.nextLine();
             try {
                 input = validator.apply(input);
@@ -174,17 +240,27 @@ class Input {
                 PrettifyConsole.printError(e.getMessage());
             }
         } while (!valid);
-
         return input;
     }
 
     protected static int getInt(String prompt, Function<Integer, Integer> validator) {
         boolean valid = false;
+        String prettifiedGuide = PrettifyConsole.guide(" (" + "Whole number" + ")");
+        return getIntCore(prompt, validator, valid, prettifiedGuide);
+    }
+
+    protected static int getInt(String prompt, String guide, Function<Integer, Integer> validator) {
+        boolean valid = false;
+        String prettifiedGuide = PrettifyConsole.guide(" (" + "Whole number, " + guide + ")");
+        return getIntCore(prompt, validator, valid, prettifiedGuide);
+    }
+
+    private static int getIntCore(String prompt, Function<Integer, Integer> validator, boolean valid, String prettifiedGuide) {
         String input;
         int parsedInput = 0;
 
         do {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt + prettifiedGuide + ": ");
             input = Menu.scanner.nextLine();
             try {
                 parsedInput = parseInt(input);
@@ -202,11 +278,16 @@ class Input {
 
     protected static double getDouble(String prompt, Function<Double, Double> validator) {
         boolean valid = false;
+        String prettifiedGuide = PrettifyConsole.guide(" (" + "Real number" + ")");
+        return getDoubleCore(prompt, validator, valid, prettifiedGuide);
+    }
+
+    private static double getDoubleCore(String prompt, Function<Double, Double> validator, boolean valid, String prettifiedGuide) {
         String input;
         double parsedInput = 0;
 
         do {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt + prettifiedGuide + ": ");
             input = Menu.scanner.nextLine();
             try {
                 parsedInput = parseDouble(input);
@@ -222,11 +303,18 @@ class Input {
         return parsedInput;
     }
 
+    protected static double getDouble(String prompt, String guide, Function<Double, Double> validator) {
+        boolean valid = false;
+        String prettifiedGuide = PrettifyConsole.guide(" (" + "Real number, " + guide + ")");
+        return getDoubleCore(prompt, validator, valid, prettifiedGuide);
+    }
+
     protected static boolean getBoolean(String prompt) {
+        String prettifiedGuide = PrettifyConsole.guide(" (" + "y/n" + ")");
         String input;
 
         do {
-            System.out.print(prompt + ": ");
+            System.out.print(prompt + prettifiedGuide + ": ");
             input = Menu.scanner.nextLine();
             switch (input) {
                 case "Y", "y", "yes", "Yes", "True", "true", "1" -> {
@@ -243,9 +331,11 @@ class Input {
     }
 
     protected static String getString(String prompt) {
-        System.out.print(prompt + ": ");
+        String prettifiedGuide = PrettifyConsole.guide(" (" + "Text" + ")");
+        System.out.print(prompt + prettifiedGuide + ": ");
         String input = Menu.scanner.nextLine();
-        if (input.isBlank()) System.out.print(PrettifyConsole.ANSI_GREEN + "<Nothing entered, using default value>" + PrettifyConsole.ANSI_RESET + "\n");
+        if (input.isBlank())
+            System.out.print(PrettifyConsole.ANSI_GREEN + "<Nothing entered, using default value>" + PrettifyConsole.ANSI_RESET + "\n");
         return input;
     }
 
@@ -279,6 +369,39 @@ class Input {
 
         return choice;
     }
+
+    static int getChoiceWithQuit(String title, String[] options) {
+        int choice = -1;
+        boolean valid = false;
+
+        do {
+            System.out.println("\n" + title);
+            for (int i = 0; i < options.length; i++) {
+                System.out.println(i + 1 + "  | " + options[i]);
+            }
+            System.out.println("0  | " + "Quit");
+            System.out.print("\nYour choice: ");
+            try {
+                choice = parseInt(Menu.scanner.nextLine());
+                if (choice >= 0 && choice <= options.length) {
+                    valid = true;
+                } else {
+                    PrettifyConsole.printError("Please pick only from available options");
+                }
+                ;
+            } catch (NumberFormatException e) {
+                PrettifyConsole.printError("Please enter a number only");
+            }
+        } while (!valid);
+
+        return choice;
+    }
+
+    public static String validateStringNotBlank(String string) throws IllegalArgumentException {
+        if (string.isBlank())
+            throw new IllegalArgumentException("Input (entered: \"" + string + "\") must not be blank");
+        return string;
+    }
 }
 
 class PrettifyConsole {
@@ -307,6 +430,10 @@ class PrettifyConsole {
     }
 
     static void title(String title) {
-        System.out.println(ANSI_PURPLE + "\n────────\n"  + title + ANSI_RESET + "\n");
+        System.out.println(ANSI_PURPLE + "\n────────\n" + title + ANSI_RESET + "\n");
+    }
+
+    static String guide(String guideText) {
+        return (ANSI_CYAN + guideText + ANSI_RESET);
     }
 }

@@ -13,10 +13,10 @@ abstract public class Product {
     private static Map<String, Product> allProducts = new HashMap<>();
 
     Product(String name, String description, int availableQuantity, double price) {
-        this.name = validateName(name);
-        this.description = description.isBlank() ? "No description" : description;
-        this.availableQuantity = validateAvailableQuantity(availableQuantity);
-        this.price = validatePrice(price);
+        setName(name);
+        setDescription(description);
+        setAvailableQuantity(availableQuantity);
+        setPrice(price);
         allProducts.put(this.name, this);
     }
 
@@ -77,7 +77,7 @@ abstract public class Product {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description.isBlank() ? "No description" : description;
     }
 
     public int getAvailableQuantity() {

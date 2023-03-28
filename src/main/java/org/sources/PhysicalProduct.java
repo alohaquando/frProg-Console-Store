@@ -7,18 +7,18 @@ public class PhysicalProduct extends Product implements Giftable {
 
     public PhysicalProduct(String name, String description, int availableQuantity, double price, double weight) {
         super(name, description, availableQuantity, price);
-        this.weight = validateWeight(weight);
+        setWeight(weight);
     }
 
     public PhysicalProduct(String name, String description, int availableQuantity, double price, double weight, boolean giftable) {
         super(name, description, availableQuantity, price);
-        this.weight = validateWeight(weight);
+        setWeight(weight);
         setGiftable(giftable);
     }
 
     public PhysicalProduct(String name, String description, int availableQuantity, double price, double weight, boolean giftable, String message) {
         super(name, description, availableQuantity, price);
-        this.weight = validateWeight(weight);
+        setWeight(weight);
         setGiftable(giftable);
         if (this.giftable) setMessage(message);
     }
@@ -34,7 +34,7 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     public void setWeight(double weight) {
-        this.weight = weight;
+        this.weight = validateWeight(weight);
     }
 
     @Override
