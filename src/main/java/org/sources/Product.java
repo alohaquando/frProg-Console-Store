@@ -22,7 +22,14 @@ abstract public class Product {
         if (availableQuantity > 0) {
             availableQuantity--;
             return true;
-        } else return false;
+        } else {
+            try {
+                throw new IllegalStateException("Product " + getTypedName() + " is out of stock");
+            } catch (IllegalStateException e) {
+                Console.printError(e.getMessage());
+                return false;
+            }
+        }
     }
 
 
@@ -48,8 +55,8 @@ abstract public class Product {
     }
 
     public static double validatePrice(double price) throws IllegalArgumentException {
-        if (price < 0)
-            throw new IllegalArgumentException("Product price (entered: \"" + price + "\") must be 0 or higher");
+        if (price <= 0)
+            throw new IllegalArgumentException("Product price (entered: \"" + price + "\") must be higher than 0");
         return price;
     }
 
@@ -60,7 +67,7 @@ abstract public class Product {
     public abstract String getTypedName();
 
     public void setName(String name) {
-        this.name = name;
+        this.name = validateName(name);
     }
 
     public String getDescription() {
@@ -76,7 +83,7 @@ abstract public class Product {
     }
 
     public void setAvailableQuantity(int availableQuantity) {
-        this.availableQuantity = availableQuantity;
+        this.availableQuantity = validateAvailableQuantity(availableQuantity);
     }
 
     public double getPrice() {
@@ -84,7 +91,7 @@ abstract public class Product {
     }
 
     public void setPrice(double price) {
-        this.price = price;
+        this.price = validatePrice(price);
     }
 
     @Override

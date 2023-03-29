@@ -1,7 +1,7 @@
 package org.main;
 
 
-import org.sources.App;
+import org.sources.*;
 
 /**
  * @author Quan Hoang DO - S3800978

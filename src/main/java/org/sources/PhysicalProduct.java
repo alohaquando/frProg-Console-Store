@@ -24,8 +24,8 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     public static double validateWeight(double weight) throws IllegalArgumentException {
-        if (weight < 0)
-            throw new IllegalArgumentException("Product weight (Entered: \"" + weight + "\") must be 0 or higher");
+        if (weight <= 0)
+            throw new IllegalArgumentException("Product weight (Entered: \"" + weight + "\") must be higher than 0");
         return weight;
     }
 

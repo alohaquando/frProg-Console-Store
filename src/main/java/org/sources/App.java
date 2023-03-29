@@ -1,13 +1,10 @@
 package org.sources;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class App {
     private static final Map<String, Product> allProducts = new HashMap<>();
-    private static final ArrayList<Cart> allCarts = new ArrayList<>();
+    private static final Map<Integer,Cart> allCarts = new HashMap<>();
 
     public static void start() {
         Menu.mainMenu();
@@ -25,16 +22,26 @@ public class App {
         return App.allProducts.keySet().toString();
     }
 
-    public static ArrayList<Cart> getAllCarts() {
+    public static Product getProduct(String productName) {
+        return App.allProducts.get(productName);
+    }
+
+    public static Map<Integer,Cart> getAllCarts() {
         return App.allCarts;
+    }
+
+    public static Cart getCart(int cartNumber) {
+        return App.allCarts.get(cartNumber);
     }
 
     public static void addToAllCarts(Cart cart) {
-        App.allCarts.add(cart);
+        App.allCarts.put(App.allCarts.size(), cart);
     }
 
-    public static ArrayList<Cart> getAllCarts(boolean sorted) {
-        if (sorted) Collections.sort(App.allCarts);
-        return App.allCarts;
+    public static ArrayList<Cart> getAllCartsSorted() {
+            ArrayList<Cart> carts = new ArrayList<>(App.allCarts.values());
+            Collections.sort(carts);
+        return carts;
+
     }
 }
