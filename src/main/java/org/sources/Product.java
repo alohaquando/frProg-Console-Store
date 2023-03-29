@@ -4,11 +4,13 @@ package org.sources;
  * @author Quan Hoang DO - S3800978
  */
 abstract public class Product {
+    /**
+     *
+     */
     private String name;
     private String description;
     private int availableQuantity;
     private double price;
-
 
     Product(String name, String description, int availableQuantity, double price) {
         setName(name);
@@ -96,13 +98,7 @@ abstract public class Product {
 
     @Override
     public String toString() {
-        return "\uD83D\uDCE6 Product" +
-                "\n   | Name: " + getTypedName() +
-                "\n   | Description: " + getDescription() +
-                "\n   | Available quantity: " + getAvailableQuantity() +
-                "\n   | Price: " + getPrice() +
-                "\n   | Type: " + getClass().getSimpleName()
-                ;
+        return "\uD83D\uDCE6 Product" + "\n   | Name: " + getTypedName() + "\n   | Description: " + getDescription() + "\n   | Available quantity: " + getAvailableQuantity() + "\n   | Price: " + getPrice() + "\n   | Type: " + getClass().getSimpleName();
     }
 }
 

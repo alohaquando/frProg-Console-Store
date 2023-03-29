@@ -15,6 +15,7 @@ import static java.lang.Integer.parseInt;
 public class Menu {
     static Scanner scanner = new Scanner(System.in);
     static boolean running = true;
+    static boolean premadeDataAdded= false;
 
 
     protected static void mainMenu() {
@@ -117,10 +118,10 @@ public class Menu {
     private static Product getProduct() {
         String query = Input.getString("Product name", "not empty", Input::validateStringNotBlank);
         if (App.getAllProducts().containsKey(query)) {
-            System.out.println("\nProduct found.");
+            Console.printSuccess("\nProduct found.");
             return App.getAllProducts().get(query);
         } else {
-            System.out.println("\nProduct not found.");
+            Console.printError("\nProduct not found.");
             return null;
         }
     }
@@ -131,7 +132,7 @@ public class Menu {
             Console.printSuccess("Product found.");
             return App.getAllProducts().get(query);
         } else {
-            Console.printSuccess("Product not found.");
+            Console.printError("Product not found.");
             return null;
         }
     }
@@ -254,10 +255,10 @@ public class Menu {
         int query = Input.getInt(prompt, "not empty", Menu::validateCartExist);
         query -= 1;
         if (App.getAllCarts().get(query) != null) {
-            System.out.println("\nCart found.");
+            Console.printSuccess("\nCart found.");
             return App.getAllCarts().get(query);
         } else {
-            System.out.println("\nCart not found.");
+            Console.printError("\nCart not found.");
             return null;
         }
     }
@@ -284,7 +285,7 @@ public class Menu {
         Console.printSuccess(String.valueOf(cart));
 
         Product product = getProduct("Name of product to add");
-        Console.printSuccess(String.valueOf(product));
+        if (product != null) Console.printSuccess(String.valueOf(product));
 
         if (product == null) return;
         assert cart != null;
@@ -369,6 +370,8 @@ public class Menu {
     }
 
     private static void addPremadeData() {
+
+    if (!premadeDataAdded) {
         Product p1 = new PhysicalProduct("Camera", "HD Point-and-Shoot Sany camera to save your moments forever", 5, 249.99, 5.75, true, "For your loved ones!");
         Product p2 = new PhysicalProduct("Laptop", "New OrangeBook Pro 14' with M1000 chipset", 0, 700, 2, false);
         Product p3 = new PhysicalProduct("TV", "Next-gen Sungsam TV with Googly TV", 1, 800, 100, false);
@@ -390,9 +393,9 @@ public class Menu {
         Console.printSuccess("Carts");
         App.getAllCartsSorted().forEach(cart -> System.out.println("\n" + cart));
 
-
+        premadeDataAdded = true;
         Console.printSuccess("Pre-made data added successfully.");
-
+    } else Console.printError("Pre-made data already added.");
     }
 
     private static void endProgram() {

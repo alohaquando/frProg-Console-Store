@@ -1,47 +1,52 @@
 package org.sources;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * @author Quan Hoang DO - S3800978
+ */
 public class App {
-    private static final Map<String, Product> allProducts = new HashMap<>();
-    private static final Map<Integer,Cart> allCarts = new HashMap<>();
 
+    private static final Map<String, Product> allProducts = new HashMap<>();
+    private static final Map<Integer, Cart> allCarts = new HashMap<>();
+
+    /**
+     * Main function to start program
+     */
     public static void start() {
         Menu.mainMenu();
     }
 
-    protected static void addToAllProducts(Product product) {
+    static void addToAllProducts(Product product) {
         App.allProducts.put(product.getName(), product);
     }
 
-    public static Map<String, Product> getAllProducts() {
+    static Map<String, Product> getAllProducts() {
         return App.allProducts;
     }
 
-    public static String getAllProductNames() {
-        return App.allProducts.keySet().toString();
-    }
-
-    public static Product getProduct(String productName) {
+    static Product getProduct(String productName) {
         return App.allProducts.get(productName);
     }
 
-    public static Map<Integer,Cart> getAllCarts() {
+    static Map<Integer, Cart> getAllCarts() {
         return App.allCarts;
     }
 
-    public static Cart getCart(int cartNumber) {
+    static Cart getCart(int cartNumber) {
         return App.allCarts.get(cartNumber);
     }
 
-    public static void addToAllCarts(Cart cart) {
+    static void addToAllCarts(Cart cart) {
         App.allCarts.put(App.allCarts.size(), cart);
     }
 
-    public static ArrayList<Cart> getAllCartsSorted() {
-            ArrayList<Cart> carts = new ArrayList<>(App.allCarts.values());
-            Collections.sort(carts);
+    static ArrayList<Cart> getAllCartsSorted() {
+        ArrayList<Cart> carts = new ArrayList<>(App.allCarts.values());
+        Collections.sort(carts);
         return carts;
-
     }
 }
