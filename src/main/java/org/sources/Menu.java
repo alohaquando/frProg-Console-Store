@@ -2,7 +2,6 @@ package org.sources;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 import java.util.function.Function;
 
@@ -17,12 +16,9 @@ public class Menu {
     static Scanner scanner = new Scanner(System.in);
     static boolean running = true;
 
-    public static void start() {
-        System.out.println(PrettifyConsole.intro);
-        mainMenu();
-    }
 
-    private static void mainMenu() {
+    protected static void mainMenu() {
+        System.out.println(PrettifyConsole.intro);
         while (running) {
             options();
             Input.enterToContinue();
@@ -41,10 +37,10 @@ public class Menu {
         System.out.println("4  | [EXTRA] List all products");
         System.out.println(PrettifyConsole.ANSI_BLUE + "\n\uD83D\uDED2 • CART" + PrettifyConsole.ANSI_RESET);
         System.out.println("5  | Create new cart");
-        System.out.println("6  | Add item to existing cart");
-        System.out.println("7  | Remove item from existing cart");
-        System.out.println("8  | Display existing cart's amount");
-        System.out.println("9  | Display all cart - sorted by weight");
+        System.out.println("6  | Add item to an existing cart");
+        System.out.println("7  | Remove item from an existing cart");
+        System.out.println("8  | Display amount of an existing cart");
+        System.out.println("9  | Display all cart, from light → heavy");
         System.out.println("10 | [EXTRA] Display cart information");
         System.out.println(PrettifyConsole.ANSI_BLUE + "\n\uD83D\uDD37 • SYSTEM" + PrettifyConsole.ANSI_RESET);
         System.out.println("0  | Quit");
@@ -64,15 +60,15 @@ public class Menu {
         switch (choice) {
             case 0 -> endProgram();
             case 1 -> createProduct();
-            case 2 -> editProductStart();
-            case 3 -> getProduct();
+            case 2 -> editProduct();
+            case 3 -> getProductInformation();
             case 4 -> getAllProducts();
             case 5 -> createCart();
             case 6 -> addToCart();
             case 7 -> removeFromCart();
             case 8 -> getCartAmount();
             case 9 -> getAllCartsSorted();
-            case 10 -> getCart();
+            case 10 -> getCartInformation();
             default ->
                     PrettifyConsole.printError("Entered choice doesn't match any available options. Please try again.");
         }
@@ -117,18 +113,29 @@ public class Menu {
         PrettifyConsole.printSuccess(String.valueOf(digitalProduct));
     }
 
-    private static void editProductStart() {
-        PrettifyConsole.title("Edit existing product");
-        String query = Input.getString("Product name to edit", "not empty", Input::validateStringNotBlank);
-        if (Product.getAllProducts().containsKey(query)) {
+    private static Product getProduct() {
+        String query = Input.getString("Product name", "not empty", Input::validateStringNotBlank);
+        if (App.getAllProducts().containsKey(query)) {
             System.out.println("\nProduct found.");
-            editProduct(Product.getAllProducts().get(query));
+            return App.getAllProducts().get(query);
         } else {
             System.out.println("\nProduct not found.");
+            return null;
         }
     }
 
-    private static void editProduct(Product product) {
+    private static void editProduct() {
+        PrettifyConsole.title("Edit existing product");
+
+        if (App.getAllProducts().isEmpty()) {
+            System.out.println("No product to edit. Create one first.");
+            return;
+        }
+
+        Product product = getProduct();
+
+        if (product == null) return;
+
         // Build the available fields to edit
         ArrayList<String> productFields = new ArrayList<>(Arrays.asList("Name", "Description", "Available quantity", "Price"));
         switch (product.getClass().getSimpleName()) {
@@ -136,7 +143,7 @@ public class Menu {
                 productFields.add("Weight");
                 productFields.add("Giftable");
             }
-            case "DigitalProduct" -> productFields.addAll(List.of("Giftable"));
+            case "DigitalProduct" -> productFields.add("Giftable");
         }
         if (((Giftable) product).getGiftable()) productFields.add("Message");
 
@@ -150,7 +157,8 @@ public class Menu {
             switch (choice) {
                 case 1 -> product.setName(Input.getString("Name", "not blank, unique", Product::validateName));
                 case 2 -> product.setDescription(Input.getString("Description"));
-                case 3 -> product.setAvailableQuantity(Input.getInt("Available quantity", "larger than 0", Product::validateAvailableQuantity));
+                case 3 ->
+                        product.setAvailableQuantity(Input.getInt("Available quantity", "larger than 0", Product::validateAvailableQuantity));
                 case 4 -> product.setPrice(Input.getDouble("Price", "larger than 0", Product::validatePrice));
                 default -> editing = false;
             }
@@ -158,51 +166,115 @@ public class Menu {
     }
 
 
-    private static void getProduct() {
+    private static void getProductInformation() {
         PrettifyConsole.title("Search for product");
-        String query = Input.getString("Product name to search for", "not empty", Input::validateStringNotBlank);
-        if (Product.getAllProducts().containsKey(query)) {
-            System.out.println("\nProduct found.");
-            Product result = Product.getAllProducts().get(query);
-            System.out.println(result);
-        } else {
-            System.out.println("\nProduct not found.");
+
+        if (App.getAllProducts().isEmpty()) {
+            System.out.println("No product to show. Create one first.");
+            return;
         }
+
+        Product product = getProduct();
+        if (product != null) System.out.println(product);
     }
+
 
     private static void getAllProducts() {
         PrettifyConsole.title("List all products");
-        if (Product.getAllProducts().isEmpty()) {
-            System.out.println("No product available");
-        } else {
-            Product.getAllProducts().values().forEach(product ->
-                    System.out.println("\n" + product));
+
+        if (App.getAllProducts().isEmpty()) {
+            System.out.println("No product to show. Create one first.");
+            return;
         }
+
+        App.getAllProducts().values().forEach(product ->
+                System.out.println("\n" + product));
 
     }
 
+    // Carts
+
     private static void createCart() {
         PrettifyConsole.title("Create new cart");
+
+        Cart cart = new Cart();
+        PrettifyConsole.printSuccess("Cart creation successful.");
+        PrettifyConsole.printSuccess(String.valueOf(cart));
+    }
+
+    private static Cart getCart() {
+        int query = Input.getInt("Cart number", "not empty", Menu::validateCartExist);
+        query -= 1;
+        if (App.getAllCarts().get(query) != null) {
+            System.out.println("\nCart found.");
+            return App.getAllCarts().get(query);
+        } else {
+            System.out.println("\nCart not found.");
+            return null;
+        }
+    }
+
+    private static int validateCartExist(int cartNumber) throws IllegalArgumentException {
+        if (cartNumber < 1 || cartNumber > App.getAllCarts().size())
+            throw new IllegalArgumentException("Cart number (entered: \"" + cartNumber + "\") must match a created cart");
+        return cartNumber;
     }
 
     private static void addToCart() {
         PrettifyConsole.title("Add product to existing cart");
+
+        if (App.getAllCarts().isEmpty()) {
+            System.out.println("No cart to add to. Create one first.");
+            return;
+        }
     }
 
     private static void removeFromCart() {
         PrettifyConsole.title("Remove product from existing cart");
+
+        if (App.getAllCarts().isEmpty()) {
+            System.out.println("No cart to remove from. Create one first.");
+            return;
+        }
     }
 
     private static void getCartAmount() {
         PrettifyConsole.title("Display existing cart's amount");
+
+        if (App.getAllCarts().isEmpty()) {
+            System.out.println("No cart to display. Create one first.");
+            return;
+        }
+
+        Cart cart = getCart();
+
+        if (cart == null) return;
+
+        System.out.println(cart.getName() + " amount breakdown: " + cart.getAmountBreakdown());
     }
 
     private static void getAllCartsSorted() {
-        PrettifyConsole.title("Display all cart - sorted by weight");
+        PrettifyConsole.title("Display all cart, from light → heavy");
+
+        if (App.getAllCarts().isEmpty()) {
+            System.out.println("No cart to show. Create one first");
+            return;
+        }
+
+        App.getAllCarts(true).forEach(cart ->
+                System.out.println("\n" + cart));
     }
 
-    private static void getCart() {
+    private static void getCartInformation() {
         PrettifyConsole.title("Display cart information");
+
+        if (App.getAllCarts().isEmpty()) {
+            System.out.println("No cart to show. Create one first");
+            return;
+        }
+
+        Cart cart = getCart();
+        if (cart != null) System.out.println(cart);
     }
 
     private static void endProgram() {

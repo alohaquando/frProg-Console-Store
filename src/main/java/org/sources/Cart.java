@@ -1,84 +1,130 @@
 package org.sources;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
-import java.util.function.ToLongFunction;
 
 public class Cart implements Comparable<Cart> {
-    private String name;
-    private Map<String, Product> itemsInCart;
-    private double amount;
+    private final String name;
+    private final HashSet<String> itemsInCart;
+    private double totalAmount;
+    private double amountWithoutShippingFee;
+    private double totalShippingFee;
     private double weight;
-    static ArrayList<Cart> allCarts = new ArrayList<>();
     final static double BASE_FEE = 0.1;
 
     public Cart() {
-        allCarts.add(this);
-        this.itemsInCart = new HashMap<>();
-        this.amount = 0;
-        this.name = "Cart #" + allCarts.size();
+        App.addToAllCarts(this);
+        this.itemsInCart = new HashSet<>();
+        this.totalAmount = 0;
+        this.amountWithoutShippingFee = 0;
+        this.totalShippingFee = 0;
+        this.name = "Cart #" + App.getAllCarts().size();
     }
 
     public boolean addItem(String productName) {
-        Product product = Product.getAllProducts().get(productName);
+        Product product = App.getAllProducts().get(productName);
         if (product == null) return false; // If product doesn't exist
-        if (itemsInCart.containsKey(product.getName())) return false; // If product already in cart
+        if (itemsInCart.contains(product.getName())) return false; // If product already in cart
         if (product.addToCart()) {
-            itemsInCart.put(product.getName(), product);
-            amount += product.getPrice();
+            itemsInCart.add(product.getName());
+            amountWithoutShippingFee += product.getPrice();
+            totalAmount += product.getPrice();
             if (product instanceof PhysicalProduct) {
-                amount += ((PhysicalProduct) product).getWeight() * BASE_FEE;
                 weight += ((PhysicalProduct) product).getWeight();
-            };
+                totalShippingFee += ((PhysicalProduct) product).getWeight() * BASE_FEE;
+                totalAmount += ((PhysicalProduct) product).getWeight() * BASE_FEE;
+            }
+            ;
+
             return true;
-        } return false;
+        }
+        return false;
     }
 
     public boolean removeItem(String productName) {
-        if (itemsInCart.containsKey(productName)) {
+        if (itemsInCart.contains(productName)) {
             itemsInCart.remove(productName);
-            Product.getAllProducts().get(productName).removeFromCart();
+
+            Product product = App.getAllProducts().get(productName);
+
+            product.quantityAddOne();
+            amountWithoutShippingFee -= product.getPrice();
+
+            if (product instanceof PhysicalProduct) {
+                totalAmount -= ((PhysicalProduct) product).getWeight() * BASE_FEE;
+                weight -= ((PhysicalProduct) product).getWeight();
+            }
+            ;
+
             return true;
         } else return false;
     }
 
-    public double cartAmount() {
-        return amount;
-    }
+//    private double doubleCheckAmount() {
+//        var wrapper = new Object() {
+//            double tmpAmount = 0;
+//            double tmpWeight = 0;
+//        };
+//        double totalWeight = 0;
+//        itemsInCart.forEach(productName -> {
+//            Product product = App.getAllProducts().get(productName);
+//            wrapper.tmpAmount += product.getPrice();
+//            if (product instanceof PhysicalProduct) wrapper.tmpWeight += ((PhysicalProduct) product).getWeight();
+//        });
+//        wrapper.tmpAmount += wrapper.tmpWeight * BASE_FEE;
+//        return wrapper.tmpAmount;
+//    }
 
-    private double doubleCheckAmount() {
-        var wrapper = new Object() {
-            double tmpAmount = 0;
-            double tmpWeight = 0;
-        };
-        double totalWeight = 0;
-        itemsInCart.values().forEach(product -> {
-            wrapper.tmpAmount += product.getPrice();
-            if (product instanceof PhysicalProduct) wrapper.tmpWeight += ((PhysicalProduct) product).getWeight();
-        });
-        wrapper.tmpAmount += wrapper.tmpWeight * BASE_FEE;
-        return wrapper.tmpAmount;
-    }
-
-    public static void displayAllCartsSorted() {
-        Collections.sort(allCarts);
-        System.out.println(allCarts);
-    }
 
     @Override
     public int compareTo(Cart cart) {
         return Double.compare(this.weight, cart.weight);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public HashSet<String> getItemsInCart() {
+        return itemsInCart;
+    }
+
+    public double getAmountWithoutShippingFee() {
+        return amountWithoutShippingFee;
+    }
+
+    public double getTotalShippingFee() {
+        return totalShippingFee;
+    }
+
+    private String getItemsInCartPrettified() {
+        return getItemsInCart().isEmpty() ? "No item added" : getItemsInCart().toString();
+    }
+
+    public String getAmountBreakdown() {
+        return
+                "\n   | Amount (NO shipping fee): " + getAmountWithoutShippingFee() +
+                "\n   | Shipping fee: " + getTotalShippingFee() +
+                "\n   | Total amount (including shipping fee): " + getTotalAmount()
+                ;
+    }
+
     @Override
     public String toString() {
-        return "\nCart{" +
-                "name='" + name + '\'' +
-                ", itemsInCart=" + itemsInCart +
-                ", amount=" + amount +
-                ", weight=" + weight +
-                '}';
+        return "\uD83D\uDED2 Cart" +
+                "\n   | Name: " + getName() +
+                "\n   | Items in cart: " + getItemsInCartPrettified() +
+                "\n   | Weight: " + getWeight() +
+                "\n   | Amount (NO shipping fee): " + getAmountWithoutShippingFee() +
+                "\n   | Shipping fee: " + getTotalShippingFee() +
+                "\n   | Total amount (including shipping fee): " + getTotalAmount()
+                ;
     }
 }

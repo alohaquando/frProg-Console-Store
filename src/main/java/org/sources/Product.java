@@ -1,7 +1,5 @@
 package org.sources;
 
-import java.util.*;
-
 /**
  * @author Quan Hoang DO - S3800978
  */
@@ -10,18 +8,14 @@ abstract public class Product {
     private String description;
     private int availableQuantity;
     private double price;
-    private static Map<String, Product> allProducts = new HashMap<>();
+
 
     Product(String name, String description, int availableQuantity, double price) {
         setName(name);
         setDescription(description);
         setAvailableQuantity(availableQuantity);
         setPrice(price);
-        allProducts.put(this.name, this);
-    }
-
-    public static Map<String, Product> getAllProducts() {
-        return allProducts;
+        App.addToAllProducts(this);
     }
 
     public boolean addToCart() {
@@ -31,11 +25,8 @@ abstract public class Product {
         } else return false;
     }
 
-    public static String getAllProductNames() {
-        return allProducts.keySet().toString();
-    }
 
-    public void removeFromCart() {
+    public void quantityAddOne() {
         availableQuantity++;
     }
 
@@ -43,7 +34,7 @@ abstract public class Product {
      * Validators
      */
     public static String validateName(String name) throws IllegalArgumentException {
-        if (allProducts.containsKey(name))
+        if (App.getAllProducts().containsKey(name))
             throw new IllegalArgumentException("Product name (entered: \"" + name + "\") has already been used");
         if (name.isBlank())
             throw new IllegalArgumentException("Product name (entered: \"" + name + "\") must not be blank");
