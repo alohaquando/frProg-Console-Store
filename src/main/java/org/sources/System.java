@@ -6,79 +6,90 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * It's a class that holds all the products and carts in the system
+ * Class containing all products and all carts.
  *
  * @author Quan Hoang DO - S3800978
  */
-public class App {
-    // It's a static variable that holds all the products and carts in the system.
-    private static final Map<String, Product> allProducts = new HashMap<>();
-    private static final Map<Integer, Cart> allCarts = new HashMap<>();
-    
+public class System {
     /**
-     * The function `start()` is a static function that is called from the `main()` function in the
-     * `Main` class. The `start()` function calls the `mainMenu()` function in the `Menu` class
+     * A HashMap of all products, with each product's name as the key
+     */
+    private static final Map<String, Product> allProducts = new HashMap<>();
+    /**
+     * A HashMap of all carts, with each cart's ID as the key
+     */
+    private static final Map<Integer, Cart> allCarts = new HashMap<>();
+
+    /**
+     * Program entry. Starts the main menu loop.
      */
     public static void start() {
         Menu.mainMenu();
     }
 
     /**
-     * Add a product to the allProducts map.
+     * Add a product to the allProducts HashMap.
+     *
      * @param product - The product to be added to the list of all products.
      */
     static void addToAllProducts(Product product) {
-        App.allProducts.put(product.getName(), product);
+        System.allProducts.put(product.getName(), product);
     }
 
     /**
-     * This function returns a map of all products.
+     * Returns a map of all products.
+     *
      * @return App.allProducts - A map of all products.
      */
     static Map<String, Product> getAllProducts() {
-        return App.allProducts;
+        return System.allProducts;
     }
 
     /**
      * Given a product name, return the product object.
-     * @param productName - The name of the product you want to get.
-     * @return A product object
+     *
+     * @param productName - The name of the product to get.
+     * @return Product - A product with the corresponding name.
      */
     static Product getProduct(String productName) {
-        return App.allProducts.get(productName);
+        return System.allProducts.get(productName);
     }
 
     /**
-     * This function returns a map of all the carts in the system.
+     * Returns all carts in the system.
+     *
      * @return A map of all the carts in the system.
      */
     static Map<Integer, Cart> getAllCarts() {
-        return App.allCarts;
+        return System.allCarts;
     }
 
     /**
      * Get the cart with the given cart number.
-     * @param cartNumber - The number of the cart you want to get.
+     *
+     * @param cartNumber - The number of the cart to get.
      * @return The cart object that is associated with the cart number.
      */
     static Cart getCart(int cartNumber) {
-        return App.allCarts.get(cartNumber);
+        return System.allCarts.get(cartNumber);
     }
 
     /**
-     * It adds a cart to the allCarts HashMap
+     * Adds a cart to the collection of all carts
+     *
      * @param cart - The cart to add to the list of all carts.
      */
     static void addToAllCarts(Cart cart) {
-        App.allCarts.put(App.allCarts.size(), cart);
+        System.allCarts.put(System.allCarts.size(), cart);
     }
 
     /**
-     * Get all carts, sort them, and return them.
-     * @return A list of all the carts sorted by their total price.
+     * Return all carts, sorted by weight, from lightest to heaviest.
+     *
+     * @return An array list of all carts, sorted by weight.
      */
     static ArrayList<Cart> getAllCartsSorted() {
-        ArrayList<Cart> carts = new ArrayList<>(App.allCarts.values());
+        ArrayList<Cart> carts = new ArrayList<>(System.allCarts.values());
         Collections.sort(carts);
         return carts;
     }

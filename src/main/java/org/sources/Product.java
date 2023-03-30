@@ -28,20 +28,19 @@ abstract public class Product {
 
     /**
      * Constructs a new Product object with the given name, description, available quantity and price.
-     * Then add this product to the all products collection in App.
+     * Then add this product to the all products collection in System.
      *
      * @param name              - The name of the product.
      * @param description       - The description of the product.
      * @param availableQuantity - The available quantity of the product.
      * @param price             - The price of the product.
-     * @throws IllegalArgumentException - If the available quantity or price is less than or equal to 0.
      */
     Product(String name, String description, int availableQuantity, double price) {
         setName(name);
         setDescription(description);
         setAvailableQuantity(availableQuantity);
         setPrice(price);
-        App.addToAllProducts(this);
+        System.addToAllProducts(this);
     }
 
     /**
@@ -52,7 +51,7 @@ abstract public class Product {
      * @throws IllegalArgumentException if the product name is already used by another product or is blank
      */
     public static String validateName(String name) throws IllegalArgumentException {
-        if (App.getAllProducts().containsKey(name))
+        if (System.getAllProducts().containsKey(name))
             throw new IllegalArgumentException("Product name (entered: \"" + name + "\") has already been used");
         if (name.isBlank())
             throw new IllegalArgumentException("Product name (entered: \"" + name + "\") must not be blank");
@@ -76,8 +75,8 @@ abstract public class Product {
      * Validates the price of a product.
      *
      * @param price - The price of the product to be validated.
-     * @throws IllegalArgumentException If the price is less than or equal to 0.
      * @return {number} The validated price.
+     * @throws IllegalArgumentException If the price is less than or equal to 0.
      */
     public static double validatePrice(double price) throws IllegalArgumentException {
         if (price <= 0)
@@ -87,7 +86,9 @@ abstract public class Product {
 
     /**
      * Adds the product to the shopping cart if it is available.
+     *
      * @return True if the product is added to the cart, otherwise false.
+     * @throws IllegalStateException if the product is out of stock.
      */
     public boolean addToCart() {
         if (availableQuantity > 0) {
@@ -104,14 +105,15 @@ abstract public class Product {
     }
 
     /**
-     * This function adds one to the available quantity.
+     * Adds one to the available quantity.
      */
     public void quantityAddOne() {
         availableQuantity++;
     }
 
     /**
-     * This function returns the name of the product.
+     * Returns the name of the product.
+     *
      * @return The name of the product.
      */
     public String getName() {
@@ -120,6 +122,7 @@ abstract public class Product {
 
     /**
      * If the name is valid, set it, otherwise throw an exception.
+     *
      * @param name - The name of the parameter.
      */
     public void setName(String name) {
@@ -127,22 +130,25 @@ abstract public class Product {
     }
 
     /**
-     * Returns the name of the type of this object.
-     * @return The name of the type of the object.
+     * Returns the string representation with product type.
+     *
+     * @return String representation with product type.
      */
     public abstract String getTypedName();
 
     /**
-     * > This function returns the description of the object
-     * @return The description of the item.
+     * Returns the description of the product
+     *
+     * @return The description of the product.
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * If the description is blank, set it to "No description". Otherwise, set it to the description
-     * @param description - The description of the command.
+     * If the description is blank, set it to "No description". Otherwise, set it to the given description
+     *
+     * @param description - The description of the product.
      */
     public void setDescription(String description) {
         this.description = description.isBlank() ? "No description" : description;
@@ -150,6 +156,7 @@ abstract public class Product {
 
     /**
      * This function returns the available quantity of the product
+     *
      * @return The available quantity of the item.
      */
     public int getAvailableQuantity() {
@@ -159,22 +166,25 @@ abstract public class Product {
     /**
      * This function sets the available quantity of the product to the given value, after validating
      * that the given value is a valid available quantity.
-     * @param availableQuantity - The number of items available for sale.
+     *
+     * @param availableQuantity - The number of items available.
      */
     public void setAvailableQuantity(int availableQuantity) {
         this.availableQuantity = validateAvailableQuantity(availableQuantity);
     }
 
     /**
-     * This function returns the price of the item.
-     * @return The price of the item.
+     * This function returns the price of the product.
+     *
+     * @return The price of the product.
      */
     public double getPrice() {
         return price;
     }
 
     /**
-     * If the price is less than zero, throw an exception, otherwise set the price.
+     * Set the price of the product after validating it is higher than 0.
+     *
      * @param price - The price of the item.
      */
     public void setPrice(double price) {
@@ -184,7 +194,8 @@ abstract public class Product {
     /**
      * The function returns a string that contains the product's name, description, available quantity,
      * price, and type
-     * @return The toString method is being returned.
+     *
+     * @return String representation of the product.
      */
     @Override
     public String toString() {

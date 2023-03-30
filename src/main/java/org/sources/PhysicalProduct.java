@@ -1,7 +1,7 @@
 package org.sources;
 
 /**
- * Represents a physical product that can be sold and shipped to customers.
+ * A Physical Product which extends from the main Product class.
  *
  * @author Quan Hoang DO - S3800978
  */
@@ -67,7 +67,7 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     /**
-     * This function returns the weight of the object.
+     * Returns the weight of the object.
      *
      * @return The weight of the object.
      */
@@ -86,12 +86,10 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     /**
-     * The function returns a string that contains the toString() of the superclass, the weight of the
-     * object, whether the object is giftable, and if the object is giftable, the message that
-     * is associated with the object
+     * The String representation of the physical product, containing information from the Product class
+     * and specific information of the PhysicalProduct class.
      *
-     * @return The toString method is being overridden to return the superclass toString method, the
-     * weight, giftable, and message.
+     * @return The String representation of the product.
      */
     @Override
     public String toString() {
@@ -99,7 +97,7 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     /**
-     * If the type is PHYSICAL, then return the string "PHYSICAL - " concatenated with the name of the
+     * Return the string "PHYSICAL - " concatenated with the name of the
      * object.
      *
      * @return The string "PHYSICAL - " concatenated with the value of the getName() method.
@@ -109,7 +107,7 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     /**
-     * It returns the value of the giftable variable.
+     * Returns the value of the giftable variable.
      *
      * @return The giftable boolean is being returned.
      */
@@ -119,9 +117,9 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     /**
-     * If the giftable boolean is set to false, then the message is set to null.
+     * Sets the giftable attribute of the PhysicalProduct object and updates the message attribute if the physical product is no longer giftable.
      *
-     * @param giftable - Whether the item is giftable.
+     * @param giftable - Indicates whether the digital product is giftable.
      */
     @Override
     public void setGiftable(boolean giftable) {
@@ -130,7 +128,7 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     /**
-     * The function `getMessage()` returns the message of the exception
+     * Return the message for a giftable product
      *
      * @return The message is being returned.
      */
@@ -140,9 +138,10 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     /**
-     * If the product is not giftable, throw an exception.
+     * Sets the message of a giftable product.
      *
-     * @param message - The message to be displayed on the gift card.
+     * @param message - The message to set.
+     * @throws IllegalStateException - If the product is not giftable.
      */
     @Override
     public void setMessage(String message) {

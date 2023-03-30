@@ -1,6 +1,6 @@
 package org.main;
 
-import org.sources.App;
+import org.sources.System;
 
 /**
  * @author Quan Hoang DO - S3800978
@@ -8,6 +8,6 @@ import org.sources.App;
 
 public class Main {
     public static void main(String[] args) {
-        App.start();
+        System.start();
     }
 }

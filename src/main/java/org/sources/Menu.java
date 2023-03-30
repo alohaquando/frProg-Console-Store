@@ -9,22 +9,32 @@ import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 
 /**
- * It's a menu that allows the user to create products and carts, and add products to carts
+ * Menu for user to interact with the program
  *
  * @author Quan Hoang DO - S3800978
  */
 public class Menu {
-    static Scanner scanner = new Scanner(System.in);
+    /**
+     * Shared scanner for all inputs
+     */
+    static Scanner scanner = new Scanner(java.lang.System.in);
+    /**
+     * Menu loop will continue running while "running" is true
+     */
     static boolean running = true;
+    /**
+     * Check if defaultData is added and prevent the same data from being added twice
+     */
     static boolean defaultDataAdded = false;
 
 
     /**
-     * This function prints the intro, then runs the options function, then waits for the user to press
-     * enter to continue
+     * Prints the intro at start, then begin the main menu loop.
+     * Waits for users to press "Enter" at the end of every function run, so they can view the output before continuing.
+     *
      */
     static void mainMenu() {
-        System.out.println(Console.intro);
+        java.lang.System.out.println(Console.intro);
         while (running) {
             options();
             Input.enterToContinue();
@@ -36,25 +46,25 @@ public class Menu {
      * corresponding function
      */
     private static void options() {
-        System.out.println(Console.ANSI_BLUE + "\n─────────────────────────────────────────────" + Console.ANSI_RESET);
-        System.out.println(Console.ANSI_BLUE + "\nPick an option by entering its number." + "\n[EXTRA] options are included for ease of use." + Console.ANSI_RESET);
-        System.out.println(Console.ANSI_BLUE + "\n\uD83D\uDCE6 • PRODUCT" + Console.ANSI_RESET);
-        System.out.println("1  | Create new product");
-        System.out.println("2  | Edit existing product");
-        System.out.println("3  | [EXTRA] Search for product");
-        System.out.println("4  | [EXTRA] List all products");
-        System.out.println(Console.ANSI_BLUE + "\n\uD83D\uDED2 • CART" + Console.ANSI_RESET);
-        System.out.println("5  | Create new cart");
-        System.out.println("6  | Add item to an existing cart");
-        System.out.println("7  | Remove item from an existing cart");
-        System.out.println("8  | Display amount of an existing cart");
-        System.out.println("9  | Display all cart, from light → heavy");
-        System.out.println("10 | [EXTRA] Display cart information");
-        System.out.println(Console.ANSI_BLUE + "\n\uD83D\uDD37 • SYSTEM" + Console.ANSI_RESET);
-        System.out.println("99 | [EXTRA] Add pre-made products and carts");
-        System.out.println("0  | Quit");
+        java.lang.System.out.println(Console.ANSI_BLUE + "\n─────────────────────────────────────────────" + Console.ANSI_RESET);
+        java.lang.System.out.println(Console.ANSI_BLUE + "\nPick an option by entering its number." + "\n[EXTRA] options are included for ease of use." + Console.ANSI_RESET);
+        java.lang.System.out.println(Console.ANSI_BLUE + "\n\uD83D\uDCE6 • PRODUCT" + Console.ANSI_RESET);
+        java.lang.System.out.println("1  | Create new product");
+        java.lang.System.out.println("2  | Edit existing product");
+        java.lang.System.out.println("3  | [EXTRA] Search for product");
+        java.lang.System.out.println("4  | [EXTRA] List all products");
+        java.lang.System.out.println(Console.ANSI_BLUE + "\n\uD83D\uDED2 • CART" + Console.ANSI_RESET);
+        java.lang.System.out.println("5  | Create new cart");
+        java.lang.System.out.println("6  | Add item to an existing cart");
+        java.lang.System.out.println("7  | Remove item from an existing cart");
+        java.lang.System.out.println("8  | Display amount of an existing cart");
+        java.lang.System.out.println("9  | Display all cart, from light → heavy");
+        java.lang.System.out.println("10 | [EXTRA] Display cart information");
+        java.lang.System.out.println(Console.ANSI_BLUE + "\n\uD83D\uDD37 • SYSTEM" + Console.ANSI_RESET);
+        java.lang.System.out.println("99 | [EXTRA] Add pre-made products and carts");
+        java.lang.System.out.println("0  | Quit");
 
-        System.out.print("\nYour choice: ");
+        java.lang.System.out.print("\nYour choice: ");
 
         int choice = -1;
 
@@ -64,7 +74,7 @@ public class Menu {
             Console.printError("Please enter a number");
         }
 
-        System.out.println();
+        java.lang.System.out.println();
 
         switch (choice) {
             case 0 -> endProgram();
@@ -144,9 +154,9 @@ public class Menu {
      */
     private static Product getProduct() {
         String query = Input.getString("Product name", "not empty", Input::validateStringNotBlank);
-        if (App.getAllProducts().containsKey(query)) {
+        if (System.getAllProducts().containsKey(query)) {
             Console.printSuccess("\nProduct found.");
-            return App.getAllProducts().get(query);
+            return System.getAllProducts().get(query);
         } else {
             Console.printError("\nProduct not found.");
             return null;
@@ -162,9 +172,9 @@ public class Menu {
      */
     private static Product getProduct(String prompt) {
         String query = Input.getString(prompt, "not empty", Input::validateStringNotBlank);
-        if (App.getAllProducts().containsKey(query)) {
+        if (System.getAllProducts().containsKey(query)) {
             Console.printSuccess("Product found.");
-            return App.getAllProducts().get(query);
+            return System.getAllProducts().get(query);
         } else {
             Console.printError("Product not found.");
             return null;
@@ -182,7 +192,7 @@ public class Menu {
     private static void editProduct() {
         Console.printTitle("Edit existing product");
 
-        if (App.getAllProducts().isEmpty()) {
+        if (System.getAllProducts().isEmpty()) {
             Console.printError("No product to edit. Create one first.");
             return;
         }
@@ -206,7 +216,7 @@ public class Menu {
             }
             if (((Giftable) product).getGiftable()) productFields.add("Message");
 
-            System.out.println(product);
+            java.lang.System.out.println(product);
             choice = Input.getChoiceWithQuit("Select field to edit", productFields.toArray(new String[0]));
 
 
@@ -256,35 +266,34 @@ public class Menu {
     private static void getProductInformation() {
         Console.printTitle("Search for product");
 
-        if (App.getAllProducts().isEmpty()) {
+        if (System.getAllProducts().isEmpty()) {
             Console.printError("No product to show. Create one first.");
             return;
         }
 
         Product product = getProduct();
-        if (product != null) System.out.println(product);
+        if (product != null) java.lang.System.out.println(product);
     }
 
     /**
-     * Prints all products available in the App.
+     * Prints all products available in the System.
      * If there are no products, it prints an error message.
      **/
     private static void getAllProducts() {
         Console.printTitle("List all products");
 
-        if (App.getAllProducts().isEmpty()) {
+        if (System.getAllProducts().isEmpty()) {
             Console.printError("No product to show. Create one first.");
             return;
         }
 
-        App.getAllProducts().values().forEach(product -> System.out.println("\n" + product));
+        System.getAllProducts().values().forEach(product -> java.lang.System.out.println("\n" + product));
     }
 
     // Carts
 
     /**
      * Creates a new empty cart and prints its details.
-     *
      */
     private static void createCart() {
         Console.printTitle("Create new cart");
@@ -295,7 +304,7 @@ public class Menu {
     }
 
     /**
-     * Retrieves a cart from the list of all available carts in the App, based on the user's input.
+     * Retrieves a cart from the list of all available carts in the System, based on the user's input of the cart number.
      *
      * @return {Cart} The selected Cart object, or null if not found.
      */
@@ -303,20 +312,21 @@ public class Menu {
         int query = Input.getInt("Cart number", "not empty", Menu::validateCartExist);
         query -= 1;
 
-        return App.getCart(query);
+        return System.getCart(query);
     }
 
     /**
      * Retrieves a cart from the list of all carts based on the user's input.
+     *
      * @param prompt - The prompt message to display to the user when requesting input.
      * @return {Cart|null} - The retrieved cart object, or null if not found.
      */
     private static Cart getCart(String prompt) {
         int query = Input.getInt(prompt, "not empty", Menu::validateCartExist);
         query -= 1;
-        if (App.getAllCarts().get(query) != null) {
+        if (System.getAllCarts().get(query) != null) {
             Console.printSuccess("\nCart found.");
-            return App.getAllCarts().get(query);
+            return System.getAllCarts().get(query);
         } else {
             Console.printError("\nCart not found.");
             return null;
@@ -331,7 +341,7 @@ public class Menu {
      * @throws IllegalArgumentException if the cart number is less than 1 or greater than the number of created carts
      */
     private static int validateCartExist(int cartNumber) throws IllegalArgumentException {
-        if (cartNumber < 1 || cartNumber > App.getAllCarts().size())
+        if (cartNumber < 1 || cartNumber > System.getAllCarts().size())
             throw new IllegalArgumentException("Cart number (entered: \"" + cartNumber + "\") must match a created cart");
         return cartNumber;
     }
@@ -345,11 +355,11 @@ public class Menu {
     private static void addToCart() {
         Console.printTitle("Add product to existing cart");
 
-        if (App.getAllCarts().isEmpty()) {
+        if (System.getAllCarts().isEmpty()) {
             Console.printError("No cart to add to. Create one first.");
             return;
         }
-        if (App.getAllProducts().isEmpty()) {
+        if (System.getAllProducts().isEmpty()) {
             Console.printError("No product to add. Create one first.");
             return;
         }
@@ -376,11 +386,11 @@ public class Menu {
     private static void removeFromCart() {
         Console.printTitle("Remove product from existing cart");
 
-        if (App.getAllCarts().isEmpty()) {
+        if (System.getAllCarts().isEmpty()) {
             Console.printError("No cart to add to. Create one first.");
             return;
         }
-        if (App.getAllProducts().isEmpty()) {
+        if (System.getAllProducts().isEmpty()) {
             Console.printError("No product to add. Create one first.");
             return;
         }
@@ -406,12 +416,12 @@ public class Menu {
     }
 
     /**
-     * It displays the amount breakdown of a cart
+     * Displays the amount breakdown of a cart
      */
     private static void getCartAmount() {
         Console.printTitle("Display existing cart's amount");
 
-        if (App.getAllCarts().isEmpty()) {
+        if (System.getAllCarts().isEmpty()) {
             Console.printError("No cart to display. Create one first.");
             return;
         }
@@ -424,26 +434,26 @@ public class Menu {
     }
 
     /**
-     * Display all cart, from light → heavy
+     * Display all cart, sorted by weight, from lightest → heaviest
      */
     private static void getAllCartsSorted() {
         Console.printTitle("Display all cart, from light → heavy");
 
-        if (App.getAllCarts().isEmpty()) {
+        if (System.getAllCarts().isEmpty()) {
             Console.printError("No cart to show. Create one first");
             return;
         }
 
-        App.getAllCartsSorted().forEach(cart -> System.out.println("\n" + cart));
+        System.getAllCartsSorted().forEach(cart -> java.lang.System.out.println("\n" + cart));
     }
 
     /**
-     * It displays the information of a cart
+     * Displays the information of a cart
      */
     private static void getCartInformation() {
         Console.printTitle("Display cart information");
 
-        if (App.getAllCarts().isEmpty()) {
+        if (System.getAllCarts().isEmpty()) {
             Console.printError("No cart to show. Create one first");
             return;
         }
@@ -453,8 +463,8 @@ public class Menu {
     }
 
     /**
-     * The above code is adding default data to the program.
-    */ 
+     * Add some default products and carts to help with testing.
+     */
     private static void addDefaultData() {
 
         if (!defaultDataAdded) {
@@ -462,7 +472,7 @@ public class Menu {
             new PhysicalProduct("Laptop", "New OrangeBook Pro 14' with M1000 chipset", 0, 700, 2, false);
             Product p3 = new PhysicalProduct("TV", "Next-gen Sungsam TV with Googly TV", 1, 800, 100, false);
             Product p4 = new DigitalProduct("Gift card", "Spend at your local CircleMart", 4, 9.99, false);
-             new DigitalProduct("Music subscription", "Listen all day with this subscription to SpotMP3", 0, 9.99, true, "For the music lovers in your life");
+            new DigitalProduct("Music subscription", "Listen all day with this subscription to SpotMP3", 0, 9.99, true, "For the music lovers in your life");
             Cart c1 = new Cart();
             c1.addItem(p4.getName());
             Cart c2 = new Cart();
@@ -475,9 +485,9 @@ public class Menu {
 
             Console.printSuccess("Products");
             Console.printSuccess("Some products have already been added to carts. Their available quantity shows the amount after they have been added.");
-            App.getAllProducts().values().forEach(product -> System.out.println("\n" + product));
+            System.getAllProducts().values().forEach(product -> java.lang.System.out.println("\n" + product));
             Console.printSuccess("Carts");
-            App.getAllCartsSorted().forEach(cart -> System.out.println("\n" + cart));
+            System.getAllCartsSorted().forEach(cart -> java.lang.System.out.println("\n" + cart));
 
             defaultDataAdded = true;
             Console.printSuccess("Pre-made data added successfully.");
@@ -489,8 +499,8 @@ public class Menu {
      */
     private static void endProgram() {
         Console.printTitle("Quit program");
-        System.out.println("Quitting program...");
-        System.out.println("Thank you for using.");
+        java.lang.System.out.println("Quitting program...");
+        java.lang.System.out.println("Thank you for using.");
         running = false;
     }
 }
@@ -502,39 +512,24 @@ public class Menu {
 class Input {
 
     /**
-     * "Get a string from the user, and validate it using the given validator function."
-     * The function is protected, so it can only be called from within the same class or from a
-     * subclass
-     * 
-     * @param prompt The prompt to display to the user.
-     * @param guide The guide is the text that will be displayed in the console to help the user
-     * understand what the input should be.
+     * Get a string from the user, and validate it using the given validator function.
+     * Keeps asking until the input is valid.
+     *
+     * @param prompt    The prompt to display to the user.
+     * @param guide     The guide is the text that will be displayed in the console to help the user
+     *                  understand what the input should be.
      * @param validator A function that takes a string and returns a string. If the string is valid, it
-     * returns the string. If it's not valid, it returns an error message.
+     *                  returns the string. If it's not valid, it returns an error message.
      * @return A string
      */
     protected static String getString(String prompt, String guide, Function<String, String> validator) {
         boolean valid = false;
         String prettifiedGuide = Console.guide(" (" + "Text, " + guide + ")");
-        return getStringCore(prompt, validator, valid, prettifiedGuide);
-    }
 
-    /**
-     * It takes a prompt, a validation function, a boolean, and a prettified guide, and returns a
-     * string
-     * 
-     * @param prompt The prompt to display to the user.
-     * @param validator a function that takes in a string and returns a string. This function is used
-     * to validate the input.
-     * @param valid boolean - whether the input is valid or not
-     * @param prettifiedGuide This is the guide that will be displayed to the user.
-     * @return The input from the user.
-     */
-    private static String getStringCore(String prompt, Function<String, String> validator, boolean valid, String prettifiedGuide) {
         String input;
 
         do {
-            System.out.print("\n" + prompt + prettifiedGuide + ": ");
+            java.lang.System.out.print("\n" + prompt + prettifiedGuide + ": ");
             input = Menu.scanner.nextLine();
             try {
                 input = validator.apply(input);
@@ -547,42 +542,24 @@ class Input {
     }
 
     /**
-     * "Get an integer from the user, and validate it using the given validator function."
-     * The validator function is a function that takes an integer and returns an integer. It's used to
-     * validate the user's input
-     * 
-     * @param prompt The prompt to display to the user.
-     * @param guide This is the guide that will be displayed to the user.
+     * Get an integer from the user, and validate it using the given validator function.
+     * Keeps asking until the input is valid.
+     *
+     * @param prompt    The prompt to display to the user.
+     * @param guide     This is the guide that will be displayed to the user.
      * @param validator A function that takes an integer and returns an integer. This is used to
-     * validate the user's input.
+     *                  validate the user's input.
      * @return The return value of the getIntCore method.
      */
     protected static int getInt(String prompt, String guide, Function<Integer, Integer> validator) {
         boolean valid = false;
         String prettifiedGuide = Console.guide(" (" + "Whole number, " + guide + ")");
-        return getIntCore(prompt, validator, valid, prettifiedGuide);
-    }
 
-    /**
-     * "Get an integer from the user, validate it, and return it."
-     * The function takes in a prompt, a validator, a boolean, and a prettified guide. The prompt is
-     * the question that the user will see. The validator is a function that takes in an integer and
-     * returns an integer. The boolean is used to determine whether the user has entered a valid
-     * input. The prettified guide is a string that is used to guide the user on what to enter
-     * 
-     * @param prompt The prompt to display to the user.
-     * @param validator a function that takes an integer and returns an integer. This is used to
-     * validate the input.
-     * @param valid boolean
-     * @param prettifiedGuide The guide that will be displayed to the user.
-     * @return The method returns an integer.
-     */
-    private static int getIntCore(String prompt, Function<Integer, Integer> validator, boolean valid, String prettifiedGuide) {
         String input;
         int parsedInput = 0;
 
         do {
-            System.out.print("\n" + prompt + prettifiedGuide + ": ");
+            java.lang.System.out.print("\n" + prompt + prettifiedGuide + ": ");
             input = Menu.scanner.nextLine();
             try {
                 parsedInput = parseInt(input);
@@ -598,23 +575,25 @@ class Input {
         return parsedInput;
     }
 
+
     /**
-     * It takes a prompt, a function that validates the input, a boolean that determines whether the
-     * input is valid, and a string that is used to prettify the prompt
-     * 
-     * @param prompt The prompt to display to the user.
-     * @param validator a function that takes a double and returns a double. This is used to validate
-     * the input.
-     * @param valid boolean - whether the input is valid
-     * @param prettifiedGuide This is the text that will be displayed after the prompt.
-     * @return A double
+     * Get a double from the user, and validate it using the given validator function.
+     * Keeps asking until the input is valid.
+     *
+     * @param prompt    The prompt to display to the user.
+     * @param guide     This is the guide that will be displayed to the user.
+     * @param validator A function that takes a double and returns a double. This is used to validate
+     *                  the input.
+     * @return A double value.
      */
-    private static double getDoubleCore(String prompt, Function<Double, Double> validator, boolean valid, String prettifiedGuide) {
+    protected static double getDouble(String prompt, String guide, Function<Double, Double> validator) {
+        boolean valid = false;
+        String prettifiedGuide = Console.guide(" (" + "Real number, " + guide + ")");
         String input;
         double parsedInput = 0;
 
         do {
-            System.out.print("\n" + prompt + prettifiedGuide + ": ");
+            java.lang.System.out.print("\n" + prompt + prettifiedGuide + ": ");
             input = Menu.scanner.nextLine();
             try {
                 parsedInput = parseDouble(input);
@@ -631,24 +610,9 @@ class Input {
     }
 
     /**
-     * "Get a double from the user, and validate it using the given validator function."
-     * The function is protected, so it can only be called from within the class or from a subclass
+     * Get a boolean from the user, validated from their input.
+     * Keeps asking until the input is valid.
      *
-     * @param prompt The prompt to display to the user.
-     * @param guide This is the guide that will be displayed to the user.
-     * @param validator A function that takes a double and returns a double. This is used to validate
-     * the input.
-     * @return A double value.
-     */
-    protected static double getDouble(String prompt, String guide, Function<Double, Double> validator) {
-        boolean valid = false;
-        String prettifiedGuide = Console.guide(" (" + "Real number, " + guide + ")");
-        return getDoubleCore(prompt, validator, valid, prettifiedGuide);
-    }
-
-    /**
-     * `getBoolean` is a function that returns a boolean value, and it takes a string as a parameter
-     * 
      * @param prompt The prompt to be displayed to the user.
      * @return A boolean
      */
@@ -657,7 +621,7 @@ class Input {
         String input;
 
         do {
-            System.out.print(prompt + prettifiedGuide + ": ");
+            java.lang.System.out.print(prompt + prettifiedGuide + ": ");
             input = Menu.scanner.nextLine();
             switch (input) {
                 case "Y", "y", "yes", "Yes", "True", "true", "1" -> {
@@ -666,38 +630,39 @@ class Input {
                 case "N", "n", "no", "No", "False", "false", "0" -> {
                     return false;
                 }
-                default -> Console.printError(prompt + " (entered: \"" + input + "\") must be a boolean\n(\"Yes\" • \"No\" | \"True\" • \"False\" | \"1\" • \"0\"");
+                default ->
+                        Console.printError(prompt + " (entered: \"" + input + "\") must be a boolean\n(\"Yes\" • \"No\" | \"True\" • \"False\" | \"1\" • \"0\"");
             }
         } while (true);
     }
 
     /**
-     * It takes a prompt, prettifies it, prints it, and returns the user's input
-     * 
+     * Get user input without validation.
+     *
      * @param prompt The prompt to be displayed to the user.
      * @return A string
      */
     protected static String getString(String prompt) {
         String prettifiedGuide = Console.guide(" (" + "Text" + ")");
-        System.out.print("\n" + prompt + prettifiedGuide + ": ");
+        java.lang.System.out.print("\n" + prompt + prettifiedGuide + ": ");
         String input = Menu.scanner.nextLine();
         if (input.isBlank())
-            System.out.print(Console.ANSI_GREEN + "<Nothing entered, using default value>" + Console.ANSI_RESET + "\n");
+            java.lang.System.out.print(Console.ANSI_GREEN + "<Nothing entered, using default value>" + Console.ANSI_RESET + "\n");
         return input;
     }
 
     /**
-     * This function waits for the user to press the Enter key before continuing.
+     * Waits for the user to press the Enter key before continuing.
      */
     static void enterToContinue() {
-        System.out.println("\nPress \"Enter\" to continue...");
+        java.lang.System.out.println("\nPress \"Enter\" to continue...");
         Menu.scanner.nextLine();
     }
 
     /**
-     * It takes a title and an array of options, and returns the user's choice
-     * 
-     * @param title The title of the menu
+     * Display a title and multiple options, and returns the user's choice
+     *
+     * @param title   The title of the menu
      * @param options The options that the user can choose from.
      * @return The choice of the user
      */
@@ -706,11 +671,11 @@ class Input {
         boolean valid = false;
 
         do {
-            System.out.println("\n" + title);
+            java.lang.System.out.println("\n" + title);
             for (int i = 0; i < options.length; i++) {
-                System.out.println(i + 1 + "  | " + options[i]);
+                java.lang.System.out.println(i + 1 + "  | " + options[i]);
             }
-            System.out.print("\nYour choice: ");
+            java.lang.System.out.print("\nYour choice: ");
             try {
                 choice = parseInt(Menu.scanner.nextLine());
                 if (choice >= 1 && choice <= options.length) {
@@ -727,9 +692,9 @@ class Input {
     }
 
     /**
-     * It takes in a title and an array of options, and returns the user's choice
-     * 
-     * @param title The title of the menu
+     * Display a title and multiple options, and returns the user's choice, allowing the user to quit the loop
+     *
+     * @param title   The title of the menu
      * @param options The options that the user can choose from.
      * @return The choice that the user has made.
      */
@@ -738,12 +703,12 @@ class Input {
         boolean valid = false;
 
         do {
-            System.out.println("\n" + title);
+            java.lang.System.out.println("\n" + title);
             for (int i = 0; i < options.length; i++) {
-                System.out.println(i + 1 + "  | " + options[i]);
+                java.lang.System.out.println(i + 1 + "  | " + options[i]);
             }
-            System.out.println("0  | " + "Quit");
-            System.out.print("\nYour choice: ");
+            java.lang.System.out.println("0  | " + "Quit");
+            java.lang.System.out.print("\nYour choice: ");
             try {
                 choice = parseInt(Menu.scanner.nextLine());
                 if (choice >= 0 && choice <= options.length) {
@@ -759,6 +724,14 @@ class Input {
         return choice;
     }
 
+
+    /**
+     * Validate that the given string is not blank
+     *
+     * @param string - Given string
+     * @return the given string
+     * @throws IllegalArgumentException if given string is blank.
+     */
     public static String validateStringNotBlank(String string) throws IllegalArgumentException {
         if (string.isBlank())
             throw new IllegalArgumentException("Input (entered: \"" + string + "\") must not be blank");
@@ -779,40 +752,38 @@ class Console {
     static final String intro = ANSI_CYAN + "\n─────────────────────────────────────────────" + "\nQuan Hoang DO - S3800978" + "\nFurther Programming - Individual Project" + "\n─────────────────────────────────────────────" + ANSI_RESET;
 
     /**
-     * `printError` is a function that takes a string as an argument and prints it to the console in
-     * yellow
-     * 
+     * Takes a string as an argument and prints it to the console in yellow. Used for warnings and errors.
+     *
      * @param text The text to be printed
      */
     protected static void printError(String text) {
-        System.out.println("\n" + ANSI_YELLOW + text + ANSI_RESET + "\n");
+        java.lang.System.out.println("\n" + ANSI_YELLOW + text + ANSI_RESET + "\n");
     }
 
     /**
-   * Prints the text in green color.
-   * 
-   * @param text The text to be printed
-   */
+     * Prints the text in green color. Used to indicate a successful result.
+     *
+     * @param text The text to be printed
+     */
     protected static void printSuccess(String text) {
-        System.out.println("\n" + ANSI_GREEN + text + ANSI_RESET);
+        java.lang.System.out.println("\n" + ANSI_GREEN + text + ANSI_RESET);
     }
 
-   /**
-    * It prints the title of the section in purple.
-    * 
-    * @param title The title of the section.
-    */
+    /**
+     * Print the given text in purple. Used for titles.
+     *
+     * @param title The title of the section.
+     */
     static void printTitle(String title) {
-        System.out.println(ANSI_PURPLE + "\n────────\n" + title + ANSI_RESET + "\n");
+        java.lang.System.out.println(ANSI_PURPLE + "\n────────\n" + title + ANSI_RESET + "\n");
     }
 
-/**
- * It takes a string as an argument and returns a string with the argument string in cyan
- * 
- * @param guideText The text that you want to be displayed in the console.
- * @return The method is returning a string that is the guideText parameter with the ANSI_CYAN and
- * ANSI_RESET strings added to the beginning and end of the string.
- */
+    /**
+     * Return the given string, formatted in blue. Used for guide text.
+     *
+     * @param guideText The text to format.
+     * @return The guideText, formatted in blue.
+     */
     static String guide(String guideText) {
         return (ANSI_CYAN + guideText + ANSI_RESET);
     }

@@ -1,7 +1,7 @@
 package org.sources;
 
 /**
- * DigitalProduct is a Product that is Giftable.
+ * A Digital Product which extends from the main Product class.
  *
  * @author Quan Hoang DO - S3800978
  */
@@ -65,7 +65,7 @@ public class DigitalProduct extends Product implements Giftable {
     }
 
     /**
-     * This function returns the giftable status of the product
+     * Returns the giftable status of the product
      *
      * @return The value of the giftable variable.
      */
@@ -86,7 +86,7 @@ public class DigitalProduct extends Product implements Giftable {
     }
 
     /**
-     * This function returns the message of the exception
+     * Return the message for a giftable product
      *
      * @return The message is being returned.
      */

@@ -20,18 +20,18 @@ public class Cart implements Comparable<Cart> {
      */
     private final int id;
     /**
-     * A HashSet containing the names of items in the cart.
+     * A set containing the names of items in the cart.
      */
     private final HashSet<String> itemsInCart;
 
     /**
-     * Creates a new Cart instance and adds it to the list of all carts in the App.
+     * Creates a new Cart instance and adds it to the list of all carts in the System.
      * Initializes an empty set of items in the cart and assigns a unique ID to the cart.
      */
     public Cart() {
-        App.addToAllCarts(this);
+        System.addToAllCarts(this);
         this.itemsInCart = new HashSet<>();
-        this.id = (App.getAllCarts().size());
+        this.id = (System.getAllCarts().size());
     }
 
     /**
@@ -40,11 +40,11 @@ public class Cart implements Comparable<Cart> {
      * the cart and return true. Otherwise, return false
      *
      * @param productName - The name of the product to be added to the
-     *                 cart.
+     *                    cart.
      * @return A boolean value
      */
     public boolean addItem(String productName) {
-        Product product = App.getProduct(productName);
+        Product product = System.getProduct(productName);
         if (product == null) return false; // If product doesn't exist
         if (itemsInCart.contains(product.getName())) return false; // If product already in cart
         if (product.addToCart()) {
@@ -60,13 +60,13 @@ public class Cart implements Comparable<Cart> {
      * product
      *
      * @param productName - The name of the product to be removed from the
-     *                 cart.
+     *                    cart.
      * @return A boolean value.
      */
     public boolean removeItem(String productName) {
         if (itemsInCart.contains(productName)) {
             itemsInCart.remove(productName);
-            Product product = App.getAllProducts().get(productName);
+            Product product = System.getAllProducts().get(productName);
             product.quantityAddOne();
             cartAmount();
             return true;
@@ -81,7 +81,7 @@ public class Cart implements Comparable<Cart> {
     private double calculateAmountNoShippingFee() {
         double result = 0;
         for (String productName : itemsInCart) {
-            Product product = App.getProduct(productName);
+            Product product = System.getProduct(productName);
             result += product.getPrice();
         }
         return BigDecimal.valueOf(result).setScale(3, RoundingMode.HALF_UP).doubleValue();
@@ -95,8 +95,8 @@ public class Cart implements Comparable<Cart> {
     private double calculateWeight() {
         double result = 0;
         for (String productName : itemsInCart) {
-            if (App.getProduct(productName) instanceof PhysicalProduct) {
-                result += ((PhysicalProduct) App.getProduct(productName)).getWeight();
+            if (System.getProduct(productName) instanceof PhysicalProduct) {
+                result += ((PhysicalProduct) System.getProduct(productName)).getWeight();
             }
         }
         return BigDecimal.valueOf(result).setScale(3, RoundingMode.HALF_UP).doubleValue();
@@ -121,49 +121,50 @@ public class Cart implements Comparable<Cart> {
      *
      * @return The total amount of the cart.
      */
-    private double cartAmount() {
+    public double cartAmount() {
         return BigDecimal.valueOf(calculateAmountNoShippingFee() + calculateShippingFee()).setScale(3, RoundingMode.HALF_UP).doubleValue();
     }
 
+    /**
+     * Override the compareTo() function so carts can be compared and sorted by weight.
+     */
     @Override
-    // Comparing the weight of the current cart with the weight of the cart that is
-    // being passed in.
     public int compareTo(Cart cart) {
         return Double.compare(this.calculateWeight(), cart.calculateWeight());
     }
 
     /**
-     * This function returns the id of the object
+     * Returns the id of the cart
      *
-     * @return The id of the object.
+     * @return The id of the cart.
      */
     public int getId() {
         return id;
     }
 
     /**
-     * This function returns the id of the object
+     * Returns the total amount (with shipping fee) of the cart
      *
-     * @return The id of the object.
+     * @return The total amount (with shipping fee) of the cart.
      */
     public double getTotalAmount() {
         return cartAmount();
     }
 
     /**
-     * This function returns the weight of the object.
+     * Returns the weight of the cart.
      *
-     * @return The weight of the package.
+     * @return The weight of the cart.
      */
     public double getWeight() {
         return calculateWeight();
     }
 
     /**
-     * This function returns a HashSet of Strings that contains all the items in the
+     * Returns a HashSet of Strings that contains all the items in the
      * cart.
      *
-     * @return A HashSet of Strings
+     * @return A HashSet of Strings of products in cart
      */
     public HashSet<String> getItemsInCart() {
         return itemsInCart;
@@ -179,16 +180,16 @@ public class Cart implements Comparable<Cart> {
     }
 
     /**
-     * This function calculates the amount without shipping fee.
+     * Returns the amount without shipping fee.
      *
-     * @return The amount of the order without the shipping fee.
+     * @return The amount of the cart without the shipping fee.
      */
     public double getAmountWithoutShippingFee() {
         return calculateAmountNoShippingFee();
     }
 
     /**
-     * This function calculates the shipping fee and returns it.
+     * Return total shipping fee
      *
      * @return The total shipping fee.
      */
@@ -209,22 +210,22 @@ public class Cart implements Comparable<Cart> {
         } else {
             StringBuilder itemsInCart = new StringBuilder();
             itemsInCart.append(getItemsInCartSize());
-            getItemsInCart().forEach(item -> itemsInCart.append("\n     └─ ").append(App.getProduct(item).getTypedName()));
+            getItemsInCart().forEach(item -> itemsInCart.append("\n     └─ ").append(System.getProduct(item).getTypedName()));
             return itemsInCart.toString();
         }
     }
 
     /**
-     * This function returns a string that contains the amount breakdown of the order
+     * Returns a string that contains the amount breakdown of the cart
      *
-     * @return The amount breakdown of the order.
+     * @return The amount breakdown of the cart.
      */
     public String getAmountBreakdown() {
         return "\n   | Amount (NO shipping fee): " + getAmountWithoutShippingFee() + "\n   | Shipping fee: " + getTotalShippingFee() + "\n   | Total amount (w/  shipping fee): " + getTotalAmount();
     }
 
     /**
-     * The function returns a string that contains the cart number, the items in the cart, the weight
+     * Returns a string that contains the cart number, the items in the cart, the weight
      * of the cart, the amount of the cart without the shipping fee, the shipping fee, and the total
      * amount of the cart
      *
