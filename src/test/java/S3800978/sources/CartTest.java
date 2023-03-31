@@ -10,11 +10,6 @@ import java.math.RoundingMode;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CartTest {
-    private Product p1;
-    private Product p2;
-    private Product p3;
-    private Product p4;
-    private Product p5;
     private Cart c1;
     private Cart c2;
     private Cart c3;
@@ -25,11 +20,11 @@ class CartTest {
         App.getAllProducts().clear();
         App.getAllCarts().clear();
 
-        p1 = new PhysicalProduct("Camera", "HD Point-and-Shoot Sany camera to save your moments forever", 5, 249.99, 5.75, true, "For your loved ones!");
-        p2 = new PhysicalProduct("Laptop", "New OrangeBook Pro 14' with M1000 chipset", 1, 700, 2, true);
-        p3 = new PhysicalProduct("TV", "Next-gen Sungsam TV with Googly TV", 2, 800, 100);
-        p4 = new DigitalProduct("Gift card", "Spend at your local CircleMart", 4, 9.99);
-        p5 = new DigitalProduct("Music subscription", "Listen all day with this subscription to SpotMP3", 0, 9.99, true, "For the music lovers in your life");
+        Product p1 = new PhysicalProduct("Camera", "HD Point-and-Shoot Sany camera to save your moments forever", 5, 249.99, 5.75, true, "For your loved ones!");
+        new PhysicalProduct("Laptop", "New OrangeBook Pro 14' with M1000 chipset", 1, 700, 2, true);
+        Product p3 = new PhysicalProduct("TV", "Next-gen Sungsam TV with Googly TV", 2, 800, 100);
+        Product p4 = new DigitalProduct("Gift card", "Spend at your local CircleMart", 4, 9.99);
+        new DigitalProduct("Music subscription", "Listen all day with this subscription to SpotMP3", 0, 9.99, true, "For the music lovers in your life");
 
         c1 = new Cart();
         c1.addItem(p4.getName());
