@@ -69,7 +69,12 @@ public abstract class App {
             return null;
         }
 
-        Product product = getProduct(Input.getString(prompt, "no prefix, not empty", Input::validateStringNotBlank));
+        System.out.println("\nName of all available products (including products not in cart)");
+        App.allProducts.values().forEach(product -> {
+            System.out.println("\uD83D\uDCE6 | " + product.getTypedName());
+        });
+
+        Product product = getProduct(Input.getString(prompt, "no prefix, not empty, case sensitive", Input::validateStringNotBlank));
 
         if (product != null) {
             Console.printSuccess("\nProduct found.");
@@ -128,10 +133,15 @@ public abstract class App {
      * @return {Cart|null} - The retrieved cart object, or null if not found.
      */
     static Cart queryCart(String prompt) {
-        if (getAllProducts().isEmpty()) {
+        if (getAllCarts().isEmpty()) {
             Console.printError("No product to add. Create one first.");
             return null;
         }
+
+        System.out.println("\nNumber of available carts");
+        App.allCarts.values().forEach(cart -> {
+            System.out.println("\uD83D\uDED2 | " + cart.getId());
+        });
 
         Cart cart = getCart(Input.getInt(prompt, "not empty", Input::validateCartExist) - 1);
 

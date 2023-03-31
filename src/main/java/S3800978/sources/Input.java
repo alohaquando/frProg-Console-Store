@@ -83,7 +83,7 @@ abstract class Input {
             for (int i = 0; i < options.length; i++) {
                 System.out.println(i + 1 + "  | " + options[i]);
             }
-            System.out.println("0  | " + "Quit");
+            System.out.println("0  | " + "Done");
             System.out.print("\nYour choice: ");
             try {
                 choice = parseInt(scanner.nextLine());
@@ -229,7 +229,7 @@ abstract class Input {
         String input;
 
         do {
-            System.out.print(prompt + prettifiedGuide + ": ");
+            System.out.print("\n" + prompt + prettifiedGuide + ": ");
             input = scanner.nextLine();
             switch (input) {
                 case "Y", "y", "yes", "Yes", "True", "true", "1" -> {

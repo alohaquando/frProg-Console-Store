@@ -20,6 +20,20 @@ public class PhysicalProduct extends Product implements Giftable {
     private String message;
 
     //region Constructors
+    /**
+     * Creates a new instance of the PhysicalProduct class.
+     *
+     * @param name              - The name of the physical product.
+     * @param description       - A brief description of the physical product.
+     * @param availableQuantity - The quantity of the physical product available for purchase.
+     * @param price             - The price of the physical product.
+     * @param weight            - The weight of the physical product.
+     */
+    public PhysicalProduct(String name, String description, int availableQuantity, double price, double weight) {
+        super(name, description, availableQuantity, price);
+        setWeight(weight);
+        setGiftable(false);
+    }
 
     /**
      * Creates a new instance of the PhysicalProduct class.
@@ -148,7 +162,6 @@ public class PhysicalProduct extends Product implements Giftable {
     }
 
     // REQUIREMENT
-
     /**
      * Return the message for a giftable product
      *
@@ -156,11 +169,11 @@ public class PhysicalProduct extends Product implements Giftable {
      */
     @Override
     public String getMessage() {
-        return message;
+        if (message == null) return null;
+        return (message.isBlank()) ? "No message" : message;
     }
 
     // REQUIREMENT
-
     /**
      * Sets the message of a giftable product.
      *
@@ -170,7 +183,7 @@ public class PhysicalProduct extends Product implements Giftable {
     @Override
     public void setMessage(String message) {
         if (!giftable) throw new IllegalStateException("Product is not set as giftable so message cannot be set.");
-        this.message = message;
+        this.message = (message.isBlank()) ? "No message" : message;
     }
     //endregion
 }

@@ -48,8 +48,25 @@ public class Cart implements Comparable<Cart> {
      */
     public boolean addItem(String productName) {
         Product product = App.getProduct(productName);
-        if (product == null) return false; // If product doesn't exist
-        if (itemsInCart.contains(product.getName())) return false; // If product already in cart
+
+        // If product doesn't exist
+        if (product == null) try {
+            throw new IllegalArgumentException("Product not found");
+        } catch (IllegalArgumentException e) {
+            Console.printError(e.getMessage());
+            return false;
+        }
+
+        // If product already in cart
+        if (itemsInCart.contains(product.getName())) {
+            try {
+                throw new IllegalStateException("Product " + product.getName() + " is already in cart " + getId());
+            } catch (IllegalStateException e) {
+                Console.printError(e.getMessage());
+                return false;
+            }
+        }
+
         if (product.addToCart()) {
             itemsInCart.add(product.getName());
             cartAmount();
@@ -70,7 +87,7 @@ public class Cart implements Comparable<Cart> {
     public boolean removeItem(String productName) {
         if (itemsInCart.contains(productName)) {
             itemsInCart.remove(productName);
-            Product product = App.getAllProducts().get(productName);
+            Product product = App.getProduct(productName);
             product.quantityAddOne();
             cartAmount();
             return true;
@@ -85,7 +102,7 @@ public class Cart implements Comparable<Cart> {
      *
      * @return The total amount of the items in the cart without shipping fee.
      */
-    public double calculateAmountNoShippingFee() {
+    private double calculateAmountNoShippingFee() {
         double result = 0;
         for (String productName : itemsInCart) {
             Product product = App.getProduct(productName);
@@ -99,7 +116,7 @@ public class Cart implements Comparable<Cart> {
      *
      * @return The weight of all the physical products in the cart.
      */
-    public double calculateWeight() {
+    private double calculateWeight() {
         double result = 0;
         for (String productName : itemsInCart) {
             if (App.getProduct(productName) instanceof PhysicalProduct) {
@@ -116,7 +133,7 @@ public class Cart implements Comparable<Cart> {
      *
      * @return The shipping fee is being returned.
      */
-    public double calculateShippingFee() {
+    private double calculateShippingFee() {
         return BigDecimal.valueOf(calculateWeight() * BASE_FEE).setScale(3, RoundingMode.HALF_UP).doubleValue();
     }
 
@@ -140,15 +157,6 @@ public class Cart implements Comparable<Cart> {
      */
     public int getId() {
         return id;
-    }
-
-    /**
-     * Returns the total amount (with shipping fee) of the cart
-     *
-     * @return The total amount (with shipping fee) of the cart.
-     */
-    public double getTotalAmount() {
-        return cartAmount();
     }
 
     /**
@@ -221,7 +229,7 @@ public class Cart implements Comparable<Cart> {
      * @return The amount breakdown of the cart.
      */
     public String getAmountBreakdown() {
-        return "\n   | Amount (NO shipping fee): " + getAmountWithoutShippingFee() + "\n   | Shipping fee: " + getTotalShippingFee() + "\n   | Total amount (w/  shipping fee): " + getTotalAmount();
+        return "\n   | Amount (NO shipping fee): " + getAmountWithoutShippingFee() + "\n   | Shipping fee: " + getTotalShippingFee() + "\n   | Total amount (w/ shipping fee): " + cartAmount();
     }
     //endregion
 
@@ -244,7 +252,7 @@ public class Cart implements Comparable<Cart> {
      */
     @Override
     public String toString() {
-        return "\uD83D\uDED2 Cart" + "\n   | Cart number: " + getId() + "\n   | Items in cart: " + getItemsInCartPrettified() + "\n   | Weight: " + getWeight() + "\n   | Amount (NO shipping fee): " + getAmountWithoutShippingFee() + "\n   | Shipping fee: " + getTotalShippingFee() + "\n   | Total amount (w/ shipping fee): " + getTotalAmount();
+        return "\uD83D\uDED2 Cart" + "\n   | Cart number: " + getId() + "\n   | Items in cart: " + getItemsInCartPrettified() + "\n   | Weight: " + getWeight() + "\n   | Amount (NO shipping fee): " + getAmountWithoutShippingFee() + "\n   | Shipping fee: " + getTotalShippingFee() + "\n   | Total amount (w/ shipping fee): " + cartAmount();
     }
     //endregion
 }

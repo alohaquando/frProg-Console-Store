@@ -13,10 +13,6 @@ abstract class Menu {
      * Menu loop will continue running while "running" is true
      */
     private static boolean running = true;
-    /**
-     * Check if defaultData is added and prevent the same data from being added twice
-     */
-    private static boolean defaultDataAdded = false;
 
     //region Menu functions
 
@@ -106,7 +102,7 @@ abstract class Menu {
         Console.printTitle("Create physical product");
 
         // Get fields
-        String name = Input.getString("Name", "not blank, unique", Product::validateName);
+        String name = Input.getString("Name", "not blank, no prefix needed, unique", Product::validateName);
         String description = Input.getString("Description");
         int availableQuantity = Input.getInt("Available quantity", "0 or more", Product::validateAvailableQuantity);
         double price = Input.getDouble("Price", "larger than 0", Product::validatePrice);
@@ -128,7 +124,7 @@ abstract class Menu {
         Console.printTitle("Create digital product");
 
         // Get fields
-        String name = Input.getString("Name", "not blank, unique", Product::validateName);
+        String name = Input.getString("Name", "not blank, no prefix needed, unique", Product::validateName);
         String description = Input.getString("Description");
         int availableQuantity = Input.getInt("Available quantity", "0 or more", Product::validateAvailableQuantity);
         double price = Input.getDouble("Price", "larger than 0", Product::validatePrice);
@@ -216,6 +212,8 @@ abstract class Menu {
                     }
                 }
             }
+
+            if (editing) Console.printSuccess("Edit made successfully");
         } while (editing);
     }
 
@@ -267,8 +265,10 @@ abstract class Menu {
         Console.printTitle("Add product to existing cart");
 
         Cart cart = App.queryCart("Cart number to add product to");
-        assert cart != null;
+        if (cart == null) return;
         Console.printSuccess(String.valueOf(cart));
+
+        Input.enterToContinue();
 
         Product product = App.queryProduct("Name of product to add");
         if (product == null) return;
@@ -289,8 +289,10 @@ abstract class Menu {
         Console.printTitle("Remove product from existing cart");
 
         Cart cart = App.queryCart("Cart number to remove product from");
-        assert cart != null;
+        if (cart == null) return;
         Console.printSuccess(String.valueOf(cart));
+
+        Input.enterToContinue();
 
         Product product = App.queryProduct("Name of product to remove");
         if (product == null) return;
@@ -311,7 +313,7 @@ abstract class Menu {
         Console.printTitle("Display existing cart's amount");
 
         Cart cart = App.queryCart("Cart to display amount");
-        assert cart != null;
+        if (cart == null) return;
 
         Console.printSuccess("Cart " + cart.getId() + " amount breakdown: " + cart.getAmountBreakdown());
     }
@@ -336,7 +338,7 @@ abstract class Menu {
         Console.printTitle("Display cart information");
 
         Cart cart = App.queryCart("Number of the cart to view");
-        assert cart != null;
+        if (cart == null) return;
         Console.printSuccess(String.valueOf(cart));
     }
     //endregion
@@ -347,7 +349,7 @@ abstract class Menu {
      * Add some default products and carts to help with testing.
      */
     private static void addDefaultData() {
-        if (!defaultDataAdded) {
+        if (App.getProduct("Camera") == null && App.getProduct("Laptop") == null && App.getProduct("TV") == null && App.getProduct("Gift card") == null && App.getProduct("Music subscription") == null) {
             Product p1 = new PhysicalProduct("Camera", "HD Point-and-Shoot Sany camera to save your moments forever", 5, 249.99, 5.75, true, "For your loved ones!");
             new PhysicalProduct("Laptop", "New OrangeBook Pro 14' with M1000 chipset", 0, 700, 2, false);
             Product p3 = new PhysicalProduct("TV", "Next-gen Sungsam TV with Googly TV", 1, 800, 100, false);
@@ -369,9 +371,12 @@ abstract class Menu {
             Console.printSuccess("Carts");
             App.queryAllCartsSorted().forEach(cart -> System.out.println("\n" + cart));
 
-            defaultDataAdded = true;
             Console.printSuccess("Pre-made data added successfully.");
-        } else Console.printError("Pre-made data already added.");
+        } else {
+            Console.printError("Pre-made data NOT added.");
+            Console.printError("Pre-made data might have already been added, or you might have created a product with the name \"Laptop\", \"TV\", \"Camera\", \"Music subscription\", \"Gift card\".");
+            Console.printError("Rerun the program to clear all data to add pre-made data again.");
+        };
     }
 
     /**

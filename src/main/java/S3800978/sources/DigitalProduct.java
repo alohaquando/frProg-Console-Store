@@ -17,6 +17,19 @@ public class DigitalProduct extends Product implements Giftable {
 
     //region Constructors
     /**
+     * Creates a new instance of the PhysicalProduct class.
+     *
+     * @param name              - The name of the physical product.
+     * @param description       - A brief description of the physical product.
+     * @param availableQuantity - The quantity of the physical product available for purchase.
+     * @param price             - The price of the physical product.
+     */
+    public DigitalProduct(String name, String description, int availableQuantity, double price) {
+        super(name, description, availableQuantity, price);
+        setGiftable(false);
+    }
+
+    /**
      * Creates a new DigitalProduct object with the given properties.
      *
      * @param name              - The name of the digital product.
@@ -49,18 +62,20 @@ public class DigitalProduct extends Product implements Giftable {
 
     //region Getters and Setters
     // REQUIREMENT
+
     /**
      * Returns the name of the digital product, with the prefix "DIGITAL - ".
      *
      * @return {string} The typed name of the digital product.
      */
-    public  String getTypedName() {
+    public String getTypedName() {
         return "DIGITAL - " + getName();
     }
     //endregion
 
     //region toString()
     // REQUIREMENT
+
     /**
      * Returns a string representation of the DigitalProduct object.
      *
@@ -73,6 +88,7 @@ public class DigitalProduct extends Product implements Giftable {
     //endregion
 
     //region Giftable Interface implementation
+
     /**
      * Returns the giftable status of the product
      *
@@ -95,6 +111,7 @@ public class DigitalProduct extends Product implements Giftable {
     }
 
     // REQUIREMENT
+
     /**
      * Return the message for a giftable product
      *
@@ -102,10 +119,12 @@ public class DigitalProduct extends Product implements Giftable {
      */
     @Override
     public String getMessage() {
-        return message;
+        if (message == null) return null;
+        return (message.isBlank()) ? "No message" : message;
     }
 
     // REQUIREMENT
+
     /**
      * Sets the message of a giftable product.
      *
@@ -115,7 +134,7 @@ public class DigitalProduct extends Product implements Giftable {
     @Override
     public void setMessage(String message) {
         if (!giftable) throw new IllegalStateException("Product is not set as giftable so message cannot be set.");
-        this.message = message;
+        this.message = (message.isBlank()) ? "No message" : message;
     }
     //endregion
 }
