@@ -1,4 +1,4 @@
-package org.sources;
+package S3800978.sources;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,7 +14,7 @@ public class Cart implements Comparable<Cart> {
     /**
      * The base fee for the cart.
      */
-    final static double BASE_FEE = 0.1;
+    final private static double BASE_FEE = 0.1;
     /**
      * An integer representing the ID of the cart.
      */
@@ -22,18 +22,21 @@ public class Cart implements Comparable<Cart> {
     /**
      * A set containing the names of items in the cart.
      */
-    private final HashSet<String> itemsInCart;
+    private final HashSet<String> itemsInCart; // REQUIREMENT
 
     /**
-     * Creates a new Cart instance and adds it to the list of all carts in the System.
+     * Creates a new Cart instance and adds it to the list of all carts in the App.
      * Initializes an empty set of items in the cart and assigns a unique ID to the cart.
      */
     public Cart() {
-        System.addToAllCarts(this);
+        App.addToAllCarts(this);
         this.itemsInCart = new HashSet<>();
-        this.id = (System.getAllCarts().size());
+        this.id = (App.getAllCarts().size());
     }
 
+    //region Product-related functions
+
+    // REQUIREMENT
     /**
      * If the product exists, isn't already in the cart, and can be added to the
      * cart, then add it to
@@ -44,7 +47,7 @@ public class Cart implements Comparable<Cart> {
      * @return A boolean value
      */
     public boolean addItem(String productName) {
-        Product product = System.getProduct(productName);
+        Product product = App.getProduct(productName);
         if (product == null) return false; // If product doesn't exist
         if (itemsInCart.contains(product.getName())) return false; // If product already in cart
         if (product.addToCart()) {
@@ -54,6 +57,7 @@ public class Cart implements Comparable<Cart> {
         } else return false;
     }
 
+    // REQUIREMENT
     /**
      * If the product is in the cart, remove it from the cart and add one to the
      * quantity of the
@@ -66,22 +70,25 @@ public class Cart implements Comparable<Cart> {
     public boolean removeItem(String productName) {
         if (itemsInCart.contains(productName)) {
             itemsInCart.remove(productName);
-            Product product = System.getAllProducts().get(productName);
+            Product product = App.getAllProducts().get(productName);
             product.quantityAddOne();
             cartAmount();
             return true;
         } else return false;
     }
+    //endregion
+
+    //region Calculator functions
 
     /**
      * Calculate the amount of the order without shipping fee.
      *
      * @return The total amount of the items in the cart without shipping fee.
      */
-    private double calculateAmountNoShippingFee() {
+    public double calculateAmountNoShippingFee() {
         double result = 0;
         for (String productName : itemsInCart) {
-            Product product = System.getProduct(productName);
+            Product product = App.getProduct(productName);
             result += product.getPrice();
         }
         return BigDecimal.valueOf(result).setScale(3, RoundingMode.HALF_UP).doubleValue();
@@ -92,18 +99,15 @@ public class Cart implements Comparable<Cart> {
      *
      * @return The weight of all the physical products in the cart.
      */
-    private double calculateWeight() {
+    public double calculateWeight() {
         double result = 0;
         for (String productName : itemsInCart) {
-            if (System.getProduct(productName) instanceof PhysicalProduct) {
-                result += ((PhysicalProduct) System.getProduct(productName)).getWeight();
+            if (App.getProduct(productName) instanceof PhysicalProduct) {
+                result += ((PhysicalProduct) App.getProduct(productName)).getWeight();
             }
         }
         return BigDecimal.valueOf(result).setScale(3, RoundingMode.HALF_UP).doubleValue();
     }
-
-    // REF:
-    // https://stackoverflow.com/questions/14845937/java-how-to-set-precision-for-double-value
 
     /**
      * Calculate the shipping fee by multiplying the weight by the base fee, then
@@ -112,10 +116,11 @@ public class Cart implements Comparable<Cart> {
      *
      * @return The shipping fee is being returned.
      */
-    private double calculateShippingFee() {
+    public double calculateShippingFee() {
         return BigDecimal.valueOf(calculateWeight() * BASE_FEE).setScale(3, RoundingMode.HALF_UP).doubleValue();
     }
 
+    // REQUIREMENT
     /**
      * Calculates the total amount of the cart, including shipping fee
      *
@@ -124,14 +129,9 @@ public class Cart implements Comparable<Cart> {
     public double cartAmount() {
         return BigDecimal.valueOf(calculateAmountNoShippingFee() + calculateShippingFee()).setScale(3, RoundingMode.HALF_UP).doubleValue();
     }
+    //endregion
 
-    /**
-     * Override the compareTo() function so carts can be compared and sorted by weight.
-     */
-    @Override
-    public int compareTo(Cart cart) {
-        return Double.compare(this.calculateWeight(), cart.calculateWeight());
-    }
+    //region Getters
 
     /**
      * Returns the id of the cart
@@ -204,13 +204,13 @@ public class Cart implements Comparable<Cart> {
      *
      * @return A string of the items in the cart.
      */
-    private String getItemsInCartPrettified() {
+    public String getItemsInCartPrettified() {
         if (getItemsInCart().isEmpty()) {
             return "No item added";
         } else {
             StringBuilder itemsInCart = new StringBuilder();
             itemsInCart.append(getItemsInCartSize());
-            getItemsInCart().forEach(item -> itemsInCart.append("\n     └─ ").append(System.getProduct(item).getTypedName()));
+            getItemsInCart().forEach(item -> itemsInCart.append("\n     └─ ").append(App.getProduct(item).getTypedName()));
             return itemsInCart.toString();
         }
     }
@@ -222,6 +222,17 @@ public class Cart implements Comparable<Cart> {
      */
     public String getAmountBreakdown() {
         return "\n   | Amount (NO shipping fee): " + getAmountWithoutShippingFee() + "\n   | Shipping fee: " + getTotalShippingFee() + "\n   | Total amount (w/  shipping fee): " + getTotalAmount();
+    }
+    //endregion
+
+    //region Overrides
+
+    /**
+     * Override the compareTo() function so carts can be compared and sorted by weight.
+     */
+    @Override
+    public int compareTo(Cart cart) {
+        return Double.compare(this.calculateWeight(), cart.calculateWeight());
     }
 
     /**
@@ -235,4 +246,5 @@ public class Cart implements Comparable<Cart> {
     public String toString() {
         return "\uD83D\uDED2 Cart" + "\n   | Cart number: " + getId() + "\n   | Items in cart: " + getItemsInCartPrettified() + "\n   | Weight: " + getWeight() + "\n   | Amount (NO shipping fee): " + getAmountWithoutShippingFee() + "\n   | Shipping fee: " + getTotalShippingFee() + "\n   | Total amount (w/ shipping fee): " + getTotalAmount();
     }
+    //endregion
 }

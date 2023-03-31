@@ -1,4 +1,4 @@
-package org.sources;
+package S3800978.sources;
 
 /**
  * A Digital Product which extends from the main Product class.
@@ -15,6 +15,7 @@ public class DigitalProduct extends Product implements Giftable {
      */
     private String message;
 
+    //region Constructors
     /**
      * Creates a new DigitalProduct object with the given properties.
      *
@@ -44,16 +45,22 @@ public class DigitalProduct extends Product implements Giftable {
         setGiftable(giftable);
         if (this.giftable) setMessage(message);
     }
+    //endregion
 
+    //region Getters and Setters
+    // REQUIREMENT
     /**
      * Returns the name of the digital product, with the prefix "DIGITAL - ".
      *
      * @return {string} The typed name of the digital product.
      */
-    public String getTypedName() {
+    public  String getTypedName() {
         return "DIGITAL - " + getName();
     }
+    //endregion
 
+    //region toString()
+    // REQUIREMENT
     /**
      * Returns a string representation of the DigitalProduct object.
      *
@@ -63,7 +70,9 @@ public class DigitalProduct extends Product implements Giftable {
     public String toString() {
         return super.toString() + "\n   | Giftable: " + getGiftable() + (getGiftable() ? "\n   | Message: " + getMessage() : "");
     }
+    //endregion
 
+    //region Giftable Interface implementation
     /**
      * Returns the giftable status of the product
      *
@@ -85,6 +94,7 @@ public class DigitalProduct extends Product implements Giftable {
         if (!giftable) message = null;
     }
 
+    // REQUIREMENT
     /**
      * Return the message for a giftable product
      *
@@ -95,6 +105,7 @@ public class DigitalProduct extends Product implements Giftable {
         return message;
     }
 
+    // REQUIREMENT
     /**
      * Sets the message of a giftable product.
      *
@@ -106,4 +117,5 @@ public class DigitalProduct extends Product implements Giftable {
         if (!giftable) throw new IllegalStateException("Product is not set as giftable so message cannot be set.");
         this.message = message;
     }
+    //endregion
 }

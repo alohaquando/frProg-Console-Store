@@ -1,4 +1,4 @@
-package org.sources;
+package S3800978.sources;
 
 /**
  * A Physical Product which extends from the main Product class.
@@ -9,7 +9,7 @@ public class PhysicalProduct extends Product implements Giftable {
     /**
      * The weight of the physical product.
      */
-    private double weight;
+    private double weight; // REQUIREMENT
     /**
      * Indicates whether the physical product can be given as a gift.
      */
@@ -18,6 +18,8 @@ public class PhysicalProduct extends Product implements Giftable {
      * An optional message to include with the gift of the physical product.
      */
     private String message;
+
+    //region Constructors
 
     /**
      * Creates a new instance of the PhysicalProduct class.
@@ -52,6 +54,9 @@ public class PhysicalProduct extends Product implements Giftable {
         setGiftable(giftable);
         if (this.giftable) setMessage(message);
     }
+    //endregion
+
+    //region Validators
 
     /**
      * Validates that the weight of a physical product is greater than 0.
@@ -60,11 +65,15 @@ public class PhysicalProduct extends Product implements Giftable {
      * @return {number} The validated weight.
      * @throws IllegalArgumentException -  If the weight is less than or equal to 0.
      */
-    public static double validateWeight(double weight) throws IllegalArgumentException {
+    static double validateWeight(double weight) throws IllegalArgumentException {
         if (weight <= 0)
             throw new IllegalArgumentException("Product weight (Entered: \"" + weight + "\") must be higher than 0");
         return weight;
     }
+    //endregion
+
+    //region Getters and Setters
+    // REQUIREMENT
 
     /**
      * Returns the weight of the object.
@@ -74,6 +83,8 @@ public class PhysicalProduct extends Product implements Giftable {
     public double getWeight() {
         return weight;
     }
+
+    // REQUIREMENT
 
     /**
      * If the weight is less than 0, set the weight to 0. Otherwise, set the weight to the value passed
@@ -85,6 +96,22 @@ public class PhysicalProduct extends Product implements Giftable {
         this.weight = validateWeight(weight);
     }
 
+
+    /**
+     * Return the string "PHYSICAL - " concatenated with the name of the
+     * object.
+     *
+     * @return The string "PHYSICAL - " concatenated with the value of the getName() method.
+     */
+    // REQUIREMENT
+    public String getTypedName() {
+        return "PHYSICAL - " + getName();
+    }
+    //endregion
+
+    //region toString()
+    // REQUIREMENT
+
     /**
      * The String representation of the physical product, containing information from the Product class
      * and specific information of the PhysicalProduct class.
@@ -95,16 +122,9 @@ public class PhysicalProduct extends Product implements Giftable {
     public String toString() {
         return super.toString() + "\n   | Weight: " + getWeight() + "\n   | Giftable: " + getGiftable() + (getGiftable() ? "\n   | Message: " + getMessage() : "");
     }
+    //endregion
 
-    /**
-     * Return the string "PHYSICAL - " concatenated with the name of the
-     * object.
-     *
-     * @return The string "PHYSICAL - " concatenated with the value of the getName() method.
-     */
-    public String getTypedName() {
-        return "PHYSICAL - " + getName();
-    }
+    //region Giftable Interface implementation
 
     /**
      * Returns the value of the giftable variable.
@@ -127,6 +147,8 @@ public class PhysicalProduct extends Product implements Giftable {
         if (!giftable) message = null;
     }
 
+    // REQUIREMENT
+
     /**
      * Return the message for a giftable product
      *
@@ -136,6 +158,8 @@ public class PhysicalProduct extends Product implements Giftable {
     public String getMessage() {
         return message;
     }
+
+    // REQUIREMENT
 
     /**
      * Sets the message of a giftable product.
@@ -148,4 +172,5 @@ public class PhysicalProduct extends Product implements Giftable {
         if (!giftable) throw new IllegalStateException("Product is not set as giftable so message cannot be set.");
         this.message = message;
     }
+    //endregion
 }

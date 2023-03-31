@@ -1,4 +1,4 @@
-package org.sources;
+package S3800978.sources;
 
 /**
  * The Giftable interface provides methods for determining if a product can be given as a gift and for setting and getting an optional message to include with the gift.
@@ -21,6 +21,7 @@ interface Giftable {
      */
     void setGiftable(boolean giftable);
 
+    // REQUIREMENT
     /**
      * Gets the message to include with the gift, if any.
      *
@@ -28,6 +29,7 @@ interface Giftable {
      */
     String getMessage();
 
+    // REQUIREMENT
     /**
      * Sets the message to include with the gift.
      *
