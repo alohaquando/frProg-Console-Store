@@ -8,6 +8,8 @@ import static java.lang.Integer.parseInt;
 
 /**
  * Functions used to display options and get user's input
+ *
+ * @author Quan Hoang DO - S3800978
  */
 @SuppressWarnings("SameParameterValue")
 abstract class Input {

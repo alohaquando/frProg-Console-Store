@@ -9,6 +9,10 @@ import java.math.RoundingMode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author Quan Hoang DO - S3800978
+ */
+
 class CartTest {
     private Cart c1;
     private Cart c2;

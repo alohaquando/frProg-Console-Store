@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author Quan Hoang DO - S3800978
+ */
+
 class ProductTest {
     private Product physicalProduct;
     private Product digitalProduct;

@@ -2,6 +2,8 @@ package S3800978.sources;
 
 /**
  * Functions used to make the console easier to understand and more visually appealing.
+ *
+ * @author Quan Hoang DO - S3800978
  */
 abstract class Console {
     private static final String ANSI_RESET = "\u001B[0m";
